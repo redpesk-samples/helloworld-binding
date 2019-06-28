@@ -1,0 +1,8 @@
+build*
+package
+nbproject/
+.stfolder
+.*.sw*
+*.tar.gz
+.vscode
+__*
