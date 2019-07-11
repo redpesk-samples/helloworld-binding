@@ -1,7 +1,7 @@
 ###########################################################################
-# Copyright 2015 - 2018 IoT.bzh
+# Copyright 2015 - 2019 IoT.bzh
 #
-# author: Romain Forlot <romain.forlot@iot.bzh>
+# author: Marec Frédéric <frederic.marec@iot.bzh>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,16 +16,7 @@
 # limitations under the License.
 ###########################################################################
 
-##################################################
-# Helloworld test configuration files
-##################################################
-PROJECT_TARGET_ADD(helloworld-config)
 
-	file(GLOB CONF_FILES "*.json")
-
-	add_input_files("${CONF_FILES}")
-
-	SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES
-	LABELS "TEST-CONFIG"
-	OUTPUT_NAME ${TARGET_NAME}
-	)
+# Include any directory not starting with _
+# -----------------------------------------------------
+PROJECT_SUBDIRS_ADD(${PROJECT_SRC_DIR_PATTERN})

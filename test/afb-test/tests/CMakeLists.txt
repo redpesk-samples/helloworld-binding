@@ -17,11 +17,15 @@
 ###########################################################################
 
 
-# Include any directory not starting with _
-# -----------------------------------------------------
-PROJECT_SUBDIRS_ADD(${PROJECT_SRC_DIR_PATTERN})
+##################################################
+# Helloworld Lua Scripts
+##################################################
+PROJECT_TARGET_ADD(test-files)
 
-ADD_TEST(NAME HELLOWORD_TESTS
-	WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-	COMMAND afm-test "${CMAKE_BINARY_DIR}/package" "${CMAKE_BINARY_DIR}/package-test" SERVICE
-)
+	file(GLOB LUA_FILES "*.lua")
+	add_input_files("${LUA_FILES}")
+
+	SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES
+	LABELS "TEST-DATA"
+	OUTPUT_NAME ${TARGET_NAME}
+	)

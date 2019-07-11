@@ -16,12 +16,16 @@
 # limitations under the License.
 ###########################################################################
 
+##################################################
+# helloworld test configuration files
+##################################################
+PROJECT_TARGET_ADD(helloworld-config)
 
-# Include any directory not starting with _
-# -----------------------------------------------------
-PROJECT_SUBDIRS_ADD(${PROJECT_SRC_DIR_PATTERN})
+	file(GLOB CONF_FILES "*.json")
 
-ADD_TEST(NAME HELLOWORD_TESTS
-	WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-	COMMAND afm-test "${CMAKE_BINARY_DIR}/package" "${CMAKE_BINARY_DIR}/package-test" SERVICE
-)
+	add_input_files("${CONF_FILES}")
+
+	SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES
+	LABELS "TEST-CONFIG"
+	OUTPUT_NAME ${TARGET_NAME}
+	)

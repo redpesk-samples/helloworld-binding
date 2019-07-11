@@ -1,7 +1,7 @@
 ###########################################################################
-# Copyright 2015 - 2018 IoT.bzh
+# Copyright 2015 - 2019 IoT.bzh
 #
-# author: Romain Forlot <romain.forlot@iot.bzh>
+# author: Marec Frédéric <frederic.marec@iot.bzh>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@
 
 
 ##################################################
-# Hellowolrd Lua Scripts
+# Helloworld Lua Scripts
 ##################################################
-PROJECT_TARGET_ADD(test-files)
+PROJECT_TARGET_ADD(fixture-files)
 
 	file(GLOB LUA_FILES "*.lua")
 	add_input_files("${LUA_FILES}")

@@ -1,0 +1,53 @@
+{
+    "id": "http://iot.bzh/download/public/schema/json/ctl-schema.json#",
+    "$schema": "http://iot.bzh/download/public/schema/json/ctl-schema.json#",
+    "metadata": {
+        "uid": "Test",
+        "version": "1.0",
+        "api": "aft-helloworld",
+        "info": "Helloworld binding",
+        "require": [
+            "helloworld"
+        ]
+    },
+    "testVerb": [{
+        "uid": "short",
+        "info": "Launch the short session of tests",
+        "action": "lua://AFT#_launch_test",
+        "args": {
+            "trace": "helloworld",
+            "files": "helloworld.lua"
+        }
+    },
+    {
+        "uid": "long",
+        "info": "Launch the long session of tests",
+        "action": "lua://AFT#_launch_test",
+        "args": {
+            "trace": "helloworld",
+            "files": [ "helloworld.lua", "mapi_tests.lua" ]
+        }
+    }],
+    "mapis": [{
+        "uid": "mapi-helloworld",
+        "info": "Faked helloworld API",
+        "libs": "mapi_helloworld.lua",
+        "verbs": [
+            {
+                "uid": "subscribe",
+                "info": "Subscribe to events",
+                "action": "lua://mapi-helloworld#_subscribe"
+            },
+            {
+                "uid": "unsubscribe",
+                "info": "Unsubscribe previously suscribed events.",
+                "action": "lua://mapi-helloworld#_unsubscribe"
+            },
+            {
+                "uid": "list",
+                "info": "get message list",
+                "action": "lua://mapi-helloworld#_list"
+            }
+        ]
+    }]
+}
