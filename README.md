@@ -1,10 +1,10 @@
-# helloworld-service
+# Helloworld Service
 
 A binding example for AGL
 
 ## Pre-requisites
 
-Please follow [this guide](http://docs.automotivelinux.org/master/docs/devguides/en/dev/reference/host-configuration/docs/1_Prerequisites.html)
+Please follow [this guide](https://docs.automotivelinux.org/docs/en/master/devguides/reference/2-download-packages.html)
 to add the AGL-Master repository to your distribution.  In order to load these files into the current shell script, use the following command :
 
 * **Debian/Ubuntu**
@@ -85,13 +85,13 @@ cd agl-service-helloworld
 #setup your build environement
 . /xdt/sdk/environment-setup-aarch64-agl-linux
 #build your application
-./conf.d/autobuild/agl/autobuild package
+./autobuild/agl/autobuild package
 ```
 
 ## Build for 'native' Linux distros (Fedora, openSUSE, Debian, Ubuntu, ...)
 
 ```bash
-./conf.d/autobuild/linux/autobuild package
+./autobuild/linux/autobuild package
 ```
 
 You can also use binary package from OBS: [opensuse.org/LinuxAutomotive][opensuse.org/LinuxAutomotive]
@@ -102,7 +102,7 @@ You can also use binary package from OBS: [opensuse.org/LinuxAutomotive][opensus
 
 ```bash
 export YOUR_BOARD_IP=192.168.1.X
-export APP_NAME=helloworld-service
+export APP_NAME=agl-service-helloworld
 scp build/${APP_NAME}.wgt root@${YOUR_BOARD_IP}:/tmp
 ssh root@${YOUR_BOARD_IP} afm-util install /tmp/${APP_NAME}.wgt
 APP_VERSION=$(ssh root@${YOUR_BOARD_IP} afm-util list | grep ${APP_NAME}@ | cut -d"\"" -f4| cut -d"@" -f2)
@@ -129,7 +129,7 @@ curl http://${YOUR_BOARD_IP}:${PORT}/api/helloworld/ping?token=x 2>/dev/null | p
 ### Native Linux
 
 For native build you need to have tools **afb-daemon**.
-You can build it by your self [app-framework-binder][app-framework-binder], or use binary package from OBS: [opensuse.org/LinuxAutomotive][opensuse.org/LinuxAutomotive]
+You can build it by yourself [app-framework-binder][app-framework-binder], or use binary package from OBS: [opensuse.org/LinuxAutomotive][opensuse.org/LinuxAutomotive]
 
 ```bash
 export PORT=8000
