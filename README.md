@@ -52,30 +52,10 @@ sudo zypper install libjson-c-dev
 sudo dnf install libjson-c-dev
 ```
 
-Binder and client communicate through HTTP protocol :
-
-* **Debian/Ubuntu**
-
-```bash
-sudo apt-get install agl-libmicrohttpd-dev
-```
-
-* **openSUSE**
-
-```bash
-sudo zypper install agl-libmicrohttpd-dev
-```
-
-* **Fedora**
-
-```bash
-sudo dnf install agl-libmicrohttpd-dev
-```
-
 ## Setup
 
 ```bash
-git clone https://gerrit.automotivelinux.org/gerrit/admin/repos/apps/agl-service-helloworld
+git clone https://gerrit.automotivelinux.org/gerrit/apps/agl-service-helloworld
 cd agl-service-helloworld
 ```
 

@@ -23,7 +23,7 @@ Release: 1
 Group:   AGL
 License: APL2.0
 Summary: Provide an AGL Helloworld Binding
-Url:     https://github.com/iotbzh/helloworld-service
+Url:     https://gerrit.automotivelinux.org/gerrit/admin/repos/apps/agl-service-helloworld
 Source0: %{name}_%{version}.orig.tar.gz
 
 BuildRequires: cmake
@@ -31,7 +31,6 @@ BuildRequires: gcc gcc-c++
 BuildRequires: pkgconfig(json-c)
 BuildRequires: pkgconfig(libsystemd) >= 222
 BuildRequires: pkgconfig(afb-daemon)
-BuildRequires: pkgconfig(libmicrohttpd) >= 0.9.55
 
 
 BuildRoot:     %{_tmppath}/%{name}-%{version}-build

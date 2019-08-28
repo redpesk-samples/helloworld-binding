@@ -9,7 +9,6 @@ Build-Depends: debhelper (>= 5),
  libjson-c-dev ,
  libsystemd-dev  (>= 222),
  agl-app-framework-binder-dev ,
- agl-libmicrohttpd-dev  (>= 0.9.55)
 Standards-Version: 3.8.2
 Homepage: https://github.com/iotbzh/helloworld-service
 
