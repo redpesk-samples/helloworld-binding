@@ -11,8 +11,10 @@
   </feature>
   <feature name="urn:AGL:widget:provided-api">
      <param name="helloworld" value="ws" />
+     <param name="helloworld-event" value="ws" />
   </feature>
-  <feature name="urn:AGL:widget:required-api">
+  <feature name="urn:AGL:widget:required-binding">
      <param name="lib/afb-helloworld-skeleton.so" value="local" />
+     <param name="lib/afb-helloworld-subscribe-event.so" value="local" />
   </feature>
 </widget>

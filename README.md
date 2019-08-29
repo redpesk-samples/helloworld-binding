@@ -96,7 +96,7 @@ ssh root@${YOUR_BOARD_IP} afm-util start ${APP_NAME}@${APP_VERSION}
 ```bash
 export YOUR_BOARD_IP=192.168.1.X
 export PORT=8000
-ssh root@${YOUR_BOARD_IP} afb-daemon --ws-client=unix:/run/user/0/apis/ws/helloworld --port=${PORT} --token='x' -v
+ssh root@${YOUR_BOARD_IP} afb-daemon --ws-client=unix:/run/platform/apis/ws/helloworld --port=${PORT} --token='x' -v
 
 #On an other terminal
 ssh root@${YOUR_BOARD_IP} afb-client-demo -H 127.0.0.1:${PORT}/api?token=x helloworld ping true
