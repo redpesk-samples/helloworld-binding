@@ -5,13 +5,16 @@ A binding example for AGL
 ## Pre-requisites
 
 Please follow [this guide](https://docs.automotivelinux.org/docs/en/master/devguides/reference/2-download-packages.html)
-to add the AGL-Master repository to your distribution.  In order to load these files into the current shell script, use the following command :
+to add the AGL-Master repository to your distribution.\
+In order to load these files into the current shell script, use the following command :
 
 * **Debian/Ubuntu**
 
 ```bash
 source /etc/profile.d/agl-app-framework-binder.sh
 ```
+
+### CMake module
 
 Then install the cmake module using your distribution package manager.
 
@@ -32,24 +35,27 @@ sudo zypper install agl-cmake-apps-module
 ```bash
 sudo dnf install agl-cmake-apps-module
 ```
+
+### Build dependency
+
 Because the helloworld-service binding uses json, the following package has to be installed.
 
 * **Debian/Ubuntu**
 
 ```bash
-sudo apt-get install libjson-c-dev
+sudo apt-get install libjson-c-dev agl-libafb-helpers-dev
 ```
 
 * **openSUSE**
 
 ```bash
-sudo zypper install libjson-c-dev
+sudo zypper install libjson-c-devel agl-libafb-helpers-devel
 ```
 
 * **Fedora**
 
 ```bash
-sudo dnf install libjson-c-dev
+sudo dnf install libjson-c-devel
 ```
 
 ## Setup
@@ -62,23 +68,21 @@ cd agl-service-helloworld
 ## Build  for AGL
 
 ```bash
-#setup your build environement
+#setup your build environnement
 . /xdt/sdk/environment-setup-aarch64-agl-linux
 #build your application
 ./autobuild/agl/autobuild package
 ```
 
-## Build for 'native' Linux distros (Fedora, openSUSE, Debian, Ubuntu, ...)
+## Build for 'native' Linux distribution (Fedora, openSUSE, Debian, Ubuntu, ...)
 
 ```bash
 ./autobuild/linux/autobuild package
 ```
 
-You can also use binary package from OBS: [opensuse.org/LinuxAutomotive][opensuse.org/LinuxAutomotive]
-
 ## Deploy
 
-### AGL
+### Deploy on AGL
 
 ```bash
 export YOUR_BOARD_IP=192.168.1.X
@@ -91,7 +95,7 @@ ssh root@${YOUR_BOARD_IP} afm-util start ${APP_NAME}@${APP_VERSION}
 
 ## TEST
 
-### AGL
+### TEST on AGL
 
 ```bash
 export YOUR_BOARD_IP=192.168.1.X
@@ -108,20 +112,23 @@ curl http://${YOUR_BOARD_IP}:${PORT}/api/helloworld/ping?token=x 2>/dev/null | p
 
 ### Native Linux
 
-For native build you need to have tools **afb-daemon**.
-You can build it by yourself [app-framework-binder][app-framework-binder], or use binary package from OBS: [opensuse.org/LinuxAutomotive][opensuse.org/LinuxAutomotive]
+For native build you need to have tools **afb-daemon**.\
+You can build it by yourself [app-framework-binder][app-framework-binder], or use binary package from OBS:\(opensuse.org/LinuxAutomotive)[opensuse.org/LinuxAutomotive]
 
 ```bash
-export PORT=8000
-afb-daemon --port=${PORT}  --ldpaths=/opt/AGL/helloworld-service/lib/
+export PORT=1234
+cd build
+afb-daemon --port=${PORT}  --ldpaths=package --workdir=. --roothttp=../htdocs --token= --verbose
 
+xdg-open http://localhost:${PORT}/
+
+#Command line test
 curl http://localhost:${PORT}/api/helloworld/ping
 #For a nice display
 curl http://localhost:${PORT}/api/helloworld/ping 2>/dev/null | python -m json.tool
-
 ```
 
-# Activate authentification security
+## Activate authentication security
 
 To test auth just switch the line:
 
@@ -139,5 +146,4 @@ To test auth just switch the line:
 
 And rebuild your application
 
-[opensuse.org/LinuxAutomotive]:https://en.opensuse.org/LinuxAutomotive
 [app-framework-binder]:https://gerrit.automotivelinux.org/gerrit/#/admin/projects/src/app-framework-binder

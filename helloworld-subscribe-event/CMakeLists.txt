@@ -17,7 +17,7 @@
 # Add target to project dependency list
 PROJECT_TARGET_ADD(helloworld-subscribe-event)
 	# Define project Targets
-	ADD_LIBRARY(${TARGET_NAME} MODULE helloworld-service-binding.c)
+	ADD_LIBRARY(${TARGET_NAME} MODULE helloworld-event-service-binding.c)
 
 	# Binder exposes a unique public entry point
 	SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES

@@ -1,5 +1,7 @@
 <html>
 
+<meta charset="utf-8" />
+
 <head>
 	<title>Simple Helloworld binding Test</title>
 	<link rel="stylesheet" href="iotbzh-Binding.css">
@@ -15,12 +17,14 @@
 	<h1>Simple Helloworld binding Test</h1>
 
 	<button id="connected" onclick="init()">Binder WS Fail</button>
-	<button id="mnitoring" onclick="window.open('/monitoring/monitor.html','_monitor_ctl')">Debug/Monitoring</a></button>
+	<button id="monitoring"
+		onclick="window.open('/monitoring/monitor.html','_monitor_ctl')">Debug/Monitoring</a></button>
 
 	<br><br>
 
 	<div>
-		<button onclick="callbinder('helloworld','ping' ,{args:{'var1':1234, 'var2':'Test ping'}});">Send ping</button></li>
+		<button onclick="callbinder('helloworld','ping' ,{args:{'var1':1234, 'var2':'Test ping'}});">Send ping</button>
+		</li>
 
 		<button onclick="callbinder('helloworld','testargs' ,{'cezam': 'open'});">Send testargs OK</button></li>
 
@@ -32,6 +36,12 @@
 	</div>
 
 	<br>
+	<div>
+		<button onclick="callbinder('helloworld-event','startTimer' ,{});">Start
+			timer</button></li>
+		<button onclick="callbinder('helloworld-event','subscribe' ,);">Subscribe Event</button></li>
+		<button onclick="callbinder('helloworld-event','unsubscribe' ,);">Unsubscribe Event</button></li>
+	</div>
 
 	<div id="main" style="visibility:hidden">
 		<ol>
