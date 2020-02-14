@@ -1,7 +1,7 @@
 ###########################################################################
 # Copyright 2015, 2016, 2017 IoT.bzh
 #
-# author: Iot-Team <secretaria@iot.bzh>
+# author: Fulup Ar Foll <fulup@iot.bzh>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,50 +16,48 @@
 # limitations under the License.
 ###########################################################################
 
+%define debug_package %{nil}
 
-Name:    agl-helloworld-service
-Version: 1.0
-Release: 1
-Group:   AGL
+Name:    agl-service-helloworld
+Version: 8.99.5
+Release: 1%{?dist}
 License: APL2.0
-Summary: Provide an AGL Helloworld Binding
-Url:     https://gerrit.automotivelinux.org/gerrit/admin/repos/apps/agl-service-helloworld
-Source0: %{name}_%{version}.orig.tar.gz
+Summary: helloworld agl service set to be used in redpesk
+Url:     https://github.com/redpesk/agl-service-helloworld
+Source0: %{name}-%{version}.tar.gz
 
 BuildRequires: cmake
 BuildRequires: gcc gcc-c++
+BuildRequires: cmake-apps-module
 BuildRequires: pkgconfig(json-c)
 BuildRequires: pkgconfig(libsystemd) >= 222
 BuildRequires: pkgconfig(afb-daemon)
+BuildRequires: pkgconfig(libmicrohttpd) >= 0.9.55
+BuildRequires: pkgconfig(afb-helpers)
+Requires: agl-app-framework-main
+Requires: agl-app-framework-binder
 
-
-BuildRoot:     %{_tmppath}/%{name}-%{version}-build
-
-%define _prefix /opt/AGL/helloworld-service
-%define __cmake cmake
 
 %description
-Provide an AGL Helloworld Binding
+helloworld agl service set to be used in redpesk
 
 %prep
-%setup -q
+%autosetup
 
 %build
-%cmake -DCMAKE_INSTALL_PREFIX:PATH=%{_libdir}
-make %{?_smp_mflags}
+[ ! -d build ] && mkdir build
+cd build
+%cmake -DVERSION=%{version} -DCMAKE_BUILD_TYPE=RELEASE ..
+%__make %{?_smp_mflags}
+%__make widget
 
 %install
-CURDIR=$(pwd)
-[ -d build ] && cd build
-make populate
-mkdir -p %{?buildroot}%{_prefix}
-cp -r package/* %{?buildroot}%{_prefix}
+install -d %{?buildroot}/%{_prefix}/AGL
+install -m 0644 %{_builddir}/%{name}-%{version}/build/%{name}.wgt %{?buildroot}/%{_prefix}/AGL
 
-cd $CURDIR
-find %{?buildroot}%{_prefix} -type d -exec echo "%dir {}" \;>> pkg_file
-find %{?buildroot}%{_prefix} -type f -exec echo "{}" \;>> pkg_file
-sed -i 's@%{?buildroot}@@g' pkg_file
+%files
+%{_prefix}/AGL/%{name}.wgt
 
+%post
+afm-util install /usr/AGL/%{name}.wgt
 
-%files -f pkg_file
-%defattr(-,root,root)
