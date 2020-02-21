@@ -20,12 +20,13 @@
 
 Name:    agl-service-helloworld
 Version: 8.99.5
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: APL2.0
 Summary: helloworld agl service set to be used in redpesk
 URL:     https://github.com/redpesk/agl-service-helloworld
 Source0: %{name}-%{version}.tar.gz
 
+BuildRequires: afm-rpm-macros
 BuildRequires: cmake
 BuildRequires: gcc gcc-c++
 BuildRequires: cmake-apps-module
@@ -43,34 +44,31 @@ The helloworld agl service gathers two bindings.
 - helloworld-skeleton: Increment a counter
 - helloworld-subscribe-event: Subscribe and get notified whether an event is emited
 
-%package test
-Summary: agl-service-helloworld test subpackage
-Group: Development/Libraries/C and C++
-%description test
-Test subpackage for the agl-service-helloworld bindings
+%define wgtname %{name}
+
+%afm_package_widget
+%afm_package_widget_test
 
 %prep
 %autosetup -p 1
 
 %build
-mkdir -p %{_target_platform}
-pushd %{_target_platform}
-%cmake -DVERSION=%{version} -DBUILD_TEST_WGT=TRUE -DCMAKE_BUILD_TYPE=RELEASE ..
-popd
-%make_build -C %{_target_platform}
-%__make widget -C %{_target_platform}
+%afm_configure_cmake_release
+%afm_build_cmake
+%afm_widget
+
 
 %install
-install -d %{?buildroot}/usr/AGL
-install -m 0644 %{_target_platform}/%{name}.wgt %{?buildroot}/usr/AGL
-install -m 0644 %{_target_platform}/%{name}-test.wgt %{?buildroot}/usr/AGL
+%afm_install_widget
+%afm_install_widgettest
 
-%files
-%{_prefix}/AGL/%{name}.wgt
+%check
 
-%files test
-%{_prefix}/AGL/%{name}-test.wgt
+%clean
 
-%post
-afm-util install /usr/AGL/%{name}.wgt
+%changelog
+* Wed Feb 19 2020 IoT.bzh <redpesk.list.iot.bzh> 8.99.5
+- Modifications in order to add a test subpackages
 
+* Fri Feb 14 2020 IoT.bzh <redpesk.list.iot.bzh> 8.99.5
+- Creation of the spec file from RedPesk generator
