@@ -19,8 +19,8 @@
 %define debug_package %{nil}
 
 Name:    agl-service-helloworld
-Version: 8.99.5
-Release: 3%{?dist}
+Version: 8.99.6
+Release: 8%{?dist}
 License: APL2.0
 Summary: helloworld agl service set to be used in redpesk
 URL:     https://github.com/redpesk/agl-service-helloworld
@@ -35,16 +35,11 @@ BuildRequires: pkgconfig(libsystemd) >= 222
 BuildRequires: pkgconfig(afb-daemon)
 BuildRequires: pkgconfig(libmicrohttpd) >= 0.9.55
 BuildRequires: pkgconfig(afb-helpers)
-Requires: agl-app-framework-main
-Requires: agl-app-framework-binder
-
 
 %description
 The helloworld agl service gathers two bindings.
 - helloworld-skeleton: Increment a counter
 - helloworld-subscribe-event: Subscribe and get notified whether an event is emited
-
-%define wgtname %{name}
 
 %afm_package_widget
 %afm_package_widget_test
@@ -56,7 +51,6 @@ The helloworld agl service gathers two bindings.
 %afm_configure_cmake_release
 %afm_build_cmake
 %afm_widget
-
 
 %install
 %afm_install_widget
