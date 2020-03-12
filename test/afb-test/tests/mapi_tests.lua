@@ -1,5 +1,5 @@
 --[[
-    Copyright (C) 2019 "IoT.bzh"
+    Copyright (C) 2019 - 2020 "IoT.bzh"
     Author Marec Frédéric <frederic.marec@iot.bzh>
 
     Licensed under the Apache License, Version 2.0 (the "License");

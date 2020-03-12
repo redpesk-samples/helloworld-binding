@@ -1,5 +1,5 @@
 ###########################################################################
-# Copyright 2015 - 2019 IoT.bzh
+# Copyright 2015 - 2020 IoT.bzh
 #
 # author: Marec Frédéric <frederic.marec@iot.bzh>
 #
