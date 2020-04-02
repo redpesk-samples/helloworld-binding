@@ -258,13 +258,13 @@ Now that the test sub-package has been installed, its widget is stored in the fo
 In order to launch the test, you must run the following command
 
 ```bash
-afm-test /usr/AGL/agl-service-helloworld-widget-test.wgt
+afm-test /usr/AGL/agl-service-helloworld-test.wgt
 ```
 
 Then a prompt appears in TAP format, describing which test is currently running and whether it succeed or failed.
 
 ```bash
-[root@localhost ~] afm-test /usr/AGL/agl-service-helloworld-widget-test.wgt
+[root@localhost ~] afm-test /usr/AGL/agl-service-helloworld-test.wgt
 1..6
 # Started on Wed Mar 11 09:42:52 2020
 # Starting class: testPingSuccess
