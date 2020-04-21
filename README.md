@@ -26,10 +26,10 @@ The aim of this part is to create a package which contained the agl-service-hell
 In order to correctly build an RPM package in the redpesk® context, your project should contain a specfile.
 The agl-service-helloworld specfile can be found at the following path:
 [conf.d/packaging/agl-service-helloworld.spec](conf.d/packaging/agl-service-helloworld.spec).
-This specfile will be used by redpesk® to describe how to build your AGL application. The resulting build produces an AGL widget that is embedded in a RPM.  
-Please read the [documentation](https://docs.redpesk.bzh/) to correctly create and set your redpesk® project and application set up.  
+This specfile will be used by redpesk® to describe how to build your AGL application. The resulting build produces an AGL widget that is embedded in a RPM.
+Please read the [documentation](https://docs.redpesk.bzh/) to correctly create and set your redpesk® project and application set up.
 You may have noticed that the agl-service-helloworld specfile contained several afm rpm macros, such as `%afm_widget`.
-These macros allow to define a specfile template for AGL application.  
+These macros allow to define a specfile template for AGL application.
 For example the two following macros indicate that this package is composed by two sub-packages
 
 * `%afm_package_widget`  &rarr; agl-service-helloworld-widget: which is basically the core widget
@@ -41,22 +41,22 @@ For example the two following macros indicate that this package is composed by t
 However, to fit the template introduced by afm rpm macros, your project should match two requirements.
 Both of these requirements are taking place in [conf.d/cmake/config.cmake](conf.d/cmake/config.cmake).
 
-* **Project name**  
+* **Project name**
 Your project name should match your package name.
-Here for example in the agl-helloworld-service config.cmake, we can see:  
-`set(PROJECT_NAME agl-service-helloworld)`  
-Thus the package must be named `agl-service-helloworld`.  
+Here for example in the agl-helloworld-service config.cmake, we can see:
+`set(PROJECT_NAME agl-service-helloworld)`
+Thus the package must be named `agl-service-helloworld`.
 
-* **Project version**  
-For convenience, we advise you not to set the project version in the config.cmake.  
-~~`set(PROJECT_VERSION "1.0")`~~  
-By doing so, your project version will automatically be set to the version listed in the specfile.  
+* **Project version**
+For convenience, we advise you not to set the project version in the config.cmake.
+~~`set(PROJECT_VERSION "1.0")`~~
+By doing so, your project version will automatically be set to the version listed in the specfile.
 This tweak allows afm macros to be fully effective regarding your widget management once deployed on a board.
 
 ## Deploy on a board
 
-Now that an agl-service-helloworld package have been generated thanks to redpesk®, let's see how to install it on a board.  
-Since redpesk® support cross-compilation, we can use either a x86_64 or aarch64 board to get your package installed in.  
+Now that an agl-service-helloworld package have been generated thanks to redpesk®, let's see how to install it on a board.
+Since redpesk® support cross-compilation, we can use either a x86_64 or aarch64 board to get your package installed in.
 During this part, two cases will be studied:
 
 * Emulated x86_64 board: **qemu-x86_64**
@@ -72,15 +72,15 @@ Download the latest redpesk® image according to your board architecture.
 * **qemu-x86_64**
 
 ```bash
-wget http://download.lorient.iot/redpesk-nightly/minimal/x86_64/latest/redpesk®-minimal-8_II-1.x86_64.raw.xz
 export RP_IMAGE=RedPesk-minimal-8_II-1.x86_64.raw.xz
+wget https://download.redpesk.bzh/redpesk/releases/8/images/minimal/x86_64/latest/$RP_IMAGE
 ```
 
 * **m3ulcb**
 
 ```bash
-wget http://download.lorient.iot/redpesk-nightly/minimal/m3ulcb/latest/redpesk®-minimal-8_II-1.aarch64.raw.xz
 export RP_IMAGE=RedPesk-minimal-8_II-1.aarch64.raw.xz
+wget https://download.redpesk.bzh/redpesk/releases/8/images/minimal/aarch64/latest/$RP_IMAGE
 ```
 
 The image you have just downloaded has the following configuration:
@@ -135,13 +135,13 @@ ssh root@localhost -p ${TCP_PORT}
 
 * **m3ulcb**
 
-The aim of this part is to flash the redpesk® raw image on a SDCard. To do so, bmaptools will be used. For example, ubuntu user can run:  
+The aim of this part is to flash the redpesk® raw image on a SDCard. To do so, bmaptools will be used. For example, ubuntu user can run:
 
 ```bash
 sudo apt-get install bmap-tools
 ```
 
-Then insert your SDCard and retrieve its device name. To do so you can execute the following command:  
+Then insert your SDCard and retrieve its device name. To do so you can execute the following command:
 
  ```bash
 lsblk -dli -o NAME,TYPE,HOTPLUG | grep "disk.*1$"
@@ -246,7 +246,7 @@ First of all ensure you installed the **agl-service-helloworld-widget**. Then pr
 dnf install agl-service-helloworld-widget-test
 ```
 
-If you correctly set your project name and version as explained in the Build part, the test widget should be installed in your target.  
+If you correctly set your project name and version as explained in the Build part, the test widget should be installed in your target.
 Keep in mind that to launch tests, the core widget needs to be installed and **currently running** on the target.
 
  ```bash
@@ -254,7 +254,7 @@ Keep in mind that to launch tests, the core widget needs to be installed and **c
 INFO:  agl-service-helloworld-test installation
  ```
 
-Now that the test sub-package has been installed, its widget is stored in the following directory: `/usr/AGL`.  
+Now that the test sub-package has been installed, its widget is stored in the following directory: `/usr/AGL`.
 In order to launch the test, you must run the following command
 
 ```bash

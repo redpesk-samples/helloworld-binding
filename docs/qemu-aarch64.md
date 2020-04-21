@@ -21,8 +21,8 @@ This tutorial require the following packages/commands to be installed:
 Because we want to emulate an aarch64 board, let's retrieve the m3ulcb image whis is used in the [README.md](https://github.com/redpesk/agl-service-helloworld/blob/master/README.md).
 
 ```bash
-wget http://download.lorient.iot/redpesk-nightly/minimal/m3ulcb/latest/redpesk®-minimal-8_II-1.aarch64.raw.xz
 export RP_IMAGE=RedPesk-minimal-8_II-1.aarch64.raw.xz
+wget https://download.redpesk.bzh/redpesk/releases/8/images/minimal/x86_64/latest/$RP_IMAGE
 ```
 
 Then unzip it
@@ -41,7 +41,7 @@ sudo apt install qemu-system-arm
 
 In order to emulate an aarch64 architecture, you will need to get an aarch64 based kernel while running on a x86_64 host. You can either build your own aarch64 kernel, or get the basic one we designed for the aarch64 image you have just downloaded.
 
-To retrieve this kernel image you must install **kpartx** and then do the following commands:  
+To retrieve this kernel image you must install **kpartx** and then do the following commands:
 **Warning**: some of these commands need to be run in superuser to be effective
 
 ```bash
@@ -58,7 +58,7 @@ mkdir -p $MOUNT_DIR
 mount /dev/mapper/$loop_name $MOUNT_DIR
 ```
 
-Then the kernel Image is located at the following path `$MOUNT_DIR/Image`, copy it wherever you want, we will use it for the qemu command.  
+Then the kernel Image is located at the following path `$MOUNT_DIR/Image`, copy it wherever you want, we will use it for the qemu command.
 To finish properly, unmount and delete the previous partition.
 
 ```bash
