@@ -193,7 +193,15 @@ INFO:  agl-service-helloworld start
 INFO:  agl-service-helloworld port is ${PORT}
  ```
 
-This implies that your widget has been installed correctly and is now running.
+This implies that your widget has been installed correctly.
+
+You can then start the service by running:
+
+```bash
+[root@localhost ~] afm-util start agl-service-helloworld@0.0
+8628
+```
+
 For example, you can access to its verb **ping** which belong to its api **helloworld** thanks to a HTTP or websocket request sent to the port `$PORT` such as follow
 
 * HTTP request:
