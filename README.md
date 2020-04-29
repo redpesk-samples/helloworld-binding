@@ -36,6 +36,8 @@ For example the two following macros indicate that this package is composed by t
 
 * `%afm_package_widget_test` &rarr; agl-service-helloworld-widget-test: which is a widget, implementing the tests used to validate the source code. Test source files are located in [test](test) directory
 
+* `%afm_package_widget_redtest` &rarr; agl-service-helloworld-widget-redtest: this package is the one used by the RedPesk infrastructure to run the test. It requires the package agl-service-helloworld-widget-test where the tests truly are. In the case of agl binding test (this is the case here), this package only contains a script that calls the right command to run the agl tests. This script can be found in the [redtest](redtest) directory.
+
 ### Project configuration
 
 However, to fit the template introduced by afm rpm macros, your project should match two requirements.

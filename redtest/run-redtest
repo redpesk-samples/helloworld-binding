@@ -1,0 +1,40 @@
+#!/bin/bash
+
+PACKAGE_REDTEST_NAME="rtm-agl-service-helloworld-widget-redtest"
+WIDGET_NAME="rtm-agl-service-helloworld"
+WIDGET_TEST_NAME="rtm-agl-service-helloworld-test"
+WIDGET_DIR_INSTALLED="/usr/AGL"
+AFB_TEST_BINDER="afbtest"
+
+# Get the name of the test binder
+TEST_BINDER=$(afm-util list -a | jq -r .[].id | grep ${AFB_TEST_BINDER}@)
+
+# Get the name of the package inside afb environment
+APP=$(afm-util list -a | jq -r .[].id | grep ${WIDGET_NAME}@)
+
+# Start the corresponding app if it does not already run
+RUNNING_APP=$(afm-util ps | jq -r .[].id | grep $APP)
+if [ -z "$RUNNING_APP" ]
+then
+    afm-util start $APP
+fi
+
+# Launch the test included in the pacakge
+wgt_full_path="${WIDGET_DIR_INSTALLED}/${WIDGET_TEST_NAME}.wgt"
+afm-test $wgt_full_path
+
+# Create the directory where the logs need to be
+mkdir -p /usr/lib/${PACKAGE_REDTEST_NAME}/redtest/logs
+
+# Copy the logs from source to new location
+cp -a /home/0/app-data/${WIDGET_TEST_NAME}/. /usr/lib/${PACKAGE_REDTEST_NAME}/redtest/logs/
+
+# Stop the app that we were testing
+afm-util terminate $APP
+
+# Uninstall the app we were testing
+afm-util remove $APP
+
+# Uninstall th test binder
+afm-util remove $TEST_BINDER
+

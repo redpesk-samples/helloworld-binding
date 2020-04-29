@@ -41,6 +41,7 @@ The helloworld agl service gathers two bindings.
 
 %afm_package_widget
 %afm_package_widget_test
+%afm_package_widget_redtest
 
 %prep
 %autosetup -p 1
@@ -53,14 +54,18 @@ The helloworld agl service gathers two bindings.
 %install
 %afm_install_widget
 %afm_install_widgettest
+%afm_install_widgetredtest
 
 %check
 
 %clean
 
 %changelog
+* Wed Apr 29 2020 IoT.bzh <redpesk.list.iot.bzh> 8.99.6
+- Modifications in order to add a redtest subpackage
+
 * Wed Feb 19 2020 IoT.bzh <redpesk.list.iot.bzh> 8.99.5
-- Modifications in order to add a test subpackages
+- Modifications in order to add a test subpackage
 
 * Fri Feb 14 2020 IoT.bzh <redpesk.list.iot.bzh> 8.99.5
 - Creation of the spec file from RedPesk generator
