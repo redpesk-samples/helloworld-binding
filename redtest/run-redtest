@@ -1,8 +1,8 @@
 #!/bin/bash
 
-PACKAGE_REDTEST_NAME="rtm-agl-service-helloworld-widget-redtest"
-WIDGET_NAME="rtm-agl-service-helloworld"
-WIDGET_TEST_NAME="rtm-agl-service-helloworld-test"
+PACKAGE_REDTEST_NAME="agl-service-helloworld-widget-redtest"
+WIDGET_NAME="agl-service-helloworld"
+WIDGET_TEST_NAME="agl-service-helloworld-test"
 WIDGET_DIR_INSTALLED="/usr/AGL"
 AFB_TEST_BINDER="afbtest"
 
