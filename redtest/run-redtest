@@ -9,7 +9,7 @@ AFB_TEST_BINDER="afbtest"
 TEST_BINDER=$(afm-util list -a | jq -r .[].id | grep ${AFB_TEST_BINDER})
 
 # Get the name of the package inside afb environment
-APP=$(afm-util list -a | jq -r .[].id | grep ${BINDING_NAME})
+APP=$(afm-util list -a | jq -r .[].id | grep "${BINDING_NAME}$")
 
 # Start the corresponding app if it does not already run
 RUNNING_APP=$(afm-util ps | jq -r .[].id | grep $APP)
