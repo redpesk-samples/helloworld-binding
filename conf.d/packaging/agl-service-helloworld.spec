@@ -13,12 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ###########################################################################
-
-%define debug_package %{nil}
-
 Name:    agl-service-helloworld
+#Hexsha: cde438aed1e990b69d4ed2fb3aa3b4ba22e78a6a
 Version: 8.99.6
-Release: 8%{?dist}
+Release: 12%{?dist}
 License: APL2.0
 Summary: helloworld agl service set to be used in redpesk
 URL:     https://github.com/redpesk/agl-service-helloworld
@@ -39,28 +37,38 @@ The helloworld agl service gathers two bindings.
 - helloworld-skeleton: Increment a counter
 - helloworld-subscribe-event: Subscribe and get notified whether an event is emited
 
-%afm_package_widget
-%afm_package_widget_test
-%afm_package_widget_redtest
+# main package: default install widget in /var/local/lib/afm/applications/%%{name}
+%afm_package
+# test package: default install widget in /var/local/lib/afm/applications/%%{name}-test
+%afm_package_test
+%afm_package_redtest
 
 %prep
 %autosetup -p 1
 
 %build
-%afm_configure_cmake_release
+%afm_configure_cmake
 %afm_build_cmake
-%afm_widget
 
 %install
-%afm_install_widget
-%afm_install_widgettest
-%afm_install_widgetredtest
+%afm_makeinstall
+%afm_install_redtest
 
 %check
 
 %clean
 
 %changelog
+
+* Mon May 18 2020 IoT.bzh(iotpkg) <redpesk.list@iot.bzh> gcde438ae
+- Upgrade version from source commit sha: cde438aed1e990b69d4ed2fb3aa3b4ba22e78a6a
+- Commit message:
+- 	Correction inside the run-redtest script (#3)
+-
+
+* Mon May 18 2020 IoT.bzh <clement.benier@iot.bzh> 8.99.6
+- bump version of afm-rpm-macros
+
 * Wed Apr 29 2020 IoT.bzh <redpesk.list.iot.bzh> 8.99.6
 - Modifications in order to add a redtest subpackage
 
@@ -69,3 +77,4 @@ The helloworld agl service gathers two bindings.
 
 * Fri Feb 14 2020 IoT.bzh <redpesk.list.iot.bzh> 8.99.5
 - Creation of the spec file from RedPesk generator
+
