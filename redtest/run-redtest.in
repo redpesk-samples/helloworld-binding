@@ -1,8 +1,8 @@
 #!/bin/bash
 
-PACKAGE_REDTEST_NAME="agl-service-helloworld-redtest"
-BINDING_NAME="agl-service-helloworld"
-BINDING_TEST_NAME="agl-service-helloworld-test"
+PACKAGE_REDTEST_NAME="@PACKAGE_REDTEST@"
+BINDING_NAME="@BINDING_NAME@"
+BINDING_TEST_NAME="@BINDING_TEST_NAME@"
 AFB_TEST_BINDER="afbtest"
 
 # Get the name of the test binder

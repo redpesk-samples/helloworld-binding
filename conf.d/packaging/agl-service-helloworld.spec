@@ -16,7 +16,7 @@
 Name:    agl-service-helloworld
 #Hexsha: cde438aed1e990b69d4ed2fb3aa3b4ba22e78a6a
 Version: 8.99.6
-Release: 12%{?dist}
+Release: 13%{?dist}
 License: APL2.0
 Summary: helloworld agl service set to be used in redpesk
 URL:     https://github.com/redpesk/agl-service-helloworld
@@ -52,13 +52,14 @@ The helloworld agl service gathers two bindings.
 
 %install
 %afm_makeinstall
-%afm_install_redtest
 
 %check
 
 %clean
 
 %changelog
+* Wed Jun 24 2020 IoT.bzh <armand.beneteau.iot.bzh> 8.99.6
+- Add the use of cmake template for run-redtest
 
 * Mon May 18 2020 IoT.bzh(iotpkg) <redpesk.list@iot.bzh> gcde438ae
 - Upgrade version from source commit sha: cde438aed1e990b69d4ed2fb3aa3b4ba22e78a6a
