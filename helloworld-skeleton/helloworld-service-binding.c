@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <json-c/json.h>
+#include "wrap-json.h"
 
 #define AFB_BINDING_VERSION 3
 #include <afb/afb-binding.h>
@@ -60,11 +61,101 @@ static void testArgsSample(afb_req_t request)
 				   json_object_get_string(queryJ));
 }
 
-// static const struct afb_auth _afb_auths_v2_monitor[] = {
-// 	{.type = afb_auth_Permission, .text = "urn:AGL:permission:monitor:public:set"},
-// 	{.type = afb_auth_Permission, .text = "urn:AGL:permission:monitor:public:get"},
-// 	{.type = afb_auth_Or, .first = &_afb_auths_v2_monitor[1], .next = &_afb_auths_v2_monitor[0]}
-// };
+static void infoSample(afb_req_t request) {
+
+	json_object *response,
+				*metadata, *groups,
+				*generalgroup, *generalverbs,
+				*infogroup, *infoverbs,
+				*pingverb, *pingusage,
+				*argsverb, *argsusage, *argssample,
+				*rightargsample, *wrongargsample, *wrongargsampletwo,
+				*infoverb;
+
+
+	// Defining verbs
+	wrap_json_pack(&pingusage, "{so*}",
+                            "data", NULL
+                        );
+	wrap_json_pack(&pingverb, "{ss* ss* ss* so*}",
+                            "uid", "ping",
+                            "info", "sends ping",
+							"api", "ping",
+							"usage", pingusage
+                        );
+
+	wrap_json_pack(&argsusage, "{so*}",
+                            "data", NULL
+                        );
+
+	wrap_json_pack(&rightargsample, "{ss*}",
+                            "cezam", "open"
+                        );
+	wrap_json_pack(&wrongargsample, "{ss*}",
+                            "foo", "bar"
+                	);
+	wrap_json_pack(&wrongargsampletwo, "{ss*}",
+                            "cezam", "tada"
+                	);
+	argssample = json_object_new_array();
+	json_object_array_add(argssample, wrongargsample);
+	json_object_array_add(argssample, wrongargsampletwo);
+	json_object_array_add(argssample, rightargsample);
+
+	wrap_json_pack(&argsverb, "{ss* ss* ss* so* sO}",
+                            "uid", "testargs",
+                            "info", "Test arguments",
+							"api", "testargs",
+							"usage", argsusage,
+							"sample", argssample
+                        );
+
+	wrap_json_pack(&infoverb, "{ss* ss* ss*}",
+                            "uid", "info",
+                            "info", "provides informations on this binding",
+							"api", "info"
+                        );
+
+	// Defining groups of verbs
+	groups = json_object_new_array();
+	
+	generalverbs = json_object_new_array();
+	json_object_array_add(generalverbs, pingverb);
+	json_object_array_add(generalverbs, argsverb);
+	wrap_json_pack(&generalgroup, "{ss ss sO}",
+                            "uid", "general",
+                            "info", "verbs related to general tests on this binding",
+                            "verbs", generalverbs
+                        );	
+	json_object_array_add(groups, generalgroup);
+
+	infoverbs = json_object_new_array();
+	json_object_array_add(infoverbs, infoverb);
+	wrap_json_pack(&infogroup, "{ss ss sO}",
+                            "uid", "info",
+                            "info", "info verbs on this binding",
+                            "verbs", infoverbs
+                        );
+	
+	json_object_array_add(groups, infogroup);
+
+	// Populating metadata for info verb
+	wrap_json_pack(&metadata, "{ss* ss* ss*}", 
+                            "uid", "Helloworld",
+                            "info", "A simple Helloworld binding",
+                            "version", "1.0"
+                        );
+
+	// Generate global response
+	wrap_json_pack(&response, "{so, sO}","metadata", metadata, "groups", groups);
+	afb_req_success(request, response, NULL);
+}
+
+static const struct afb_auth _afb_auths_v2_monitor[] = {
+	{.type = afb_auth_Permission, .text = "urn:AGL:permission:monitor:public:set"},
+	{.type = afb_auth_Permission, .text = "urn:AGL:permission:monitor:public:get"},
+	{.type = afb_auth_Or, .first = &_afb_auths_v2_monitor[1], .next = &_afb_auths_v2_monitor[0]}
+};
 
 static const afb_verb_t verbs[] = {
 	/*Without security*/
@@ -74,6 +165,7 @@ static const afb_verb_t verbs[] = {
 	/*{ .verb = "ping"     , .session = AFB_SESSION_NONE, .callback = pingSample  , .auth = &_afb_auths_v2_monitor[1]},*/
 
 	{.verb = "testargs", .session = AFB_SESSION_NONE, .callback = testArgsSample, .auth = NULL},
+	{.verb = "info", .session = AFB_SESSION_NONE, .callback = infoSample, .auth = NULL},
 	{NULL}
 };
 
