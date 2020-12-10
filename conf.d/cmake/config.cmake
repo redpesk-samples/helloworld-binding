@@ -18,10 +18,10 @@
 
 # Project Info
 # ------------------
-set(PROJECT_NAME agl-service-helloworld)
-set(PROJECT_PRETTY_NAME "Helloworld for AGL")
-set(PROJECT_DESCRIPTION "Provide an AGL Helloworld Binding")
-set(PROJECT_URL "https://gerrit.automotivelinux.org/gerrit/admin/repos/apps/agl-service-helloworld")
+set(PROJECT_NAME helloworld-binding)
+set(PROJECT_PRETTY_NAME "Helloworld Binding")
+set(PROJECT_DESCRIPTION "Provide an Helloworld Binding")
+set(PROJECT_URL "https://github.com/redpesk-samples/helloworld-binding")
 set(PROJECT_ICON "icon.png")
 set(PROJECT_AUTHOR "Iot-Team")
 set(PROJECT_AUTHOR_MAIL "frederic.marec@iot.bzh")
