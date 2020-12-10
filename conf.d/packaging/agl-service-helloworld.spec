@@ -13,33 +13,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ###########################################################################
-Name:    agl-service-helloworld
-#Hexsha: cde438aed1e990b69d4ed2fb3aa3b4ba22e78a6a
-Version: 8.99.6
-Release: 13%{?dist}
+Name:    helloworld-binding
+Version: 1.0.0
+Release: 0%{?dist}
 License: APL2.0
-Summary: helloworld agl service set to be used in redpesk
-URL:     https://github.com/redpesk/agl-service-helloworld
+Summary: helloworld service set to be used in redpesk
+URL:     https://github.com/redpesk-samples/helloworld-binding
 Source0: %{name}-%{version}.tar.gz
 
 BuildRequires: afm-rpm-macros
 BuildRequires: cmake
 BuildRequires: gcc gcc-c++
-BuildRequires: cmake-apps-module
+BuildRequires: afb-cmake-modules
 BuildRequires: pkgconfig(json-c)
 BuildRequires: pkgconfig(libsystemd) >= 222
-BuildRequires: pkgconfig(afb-daemon)
+BuildRequires: pkgconfig(libafb)
 BuildRequires: pkgconfig(libmicrohttpd) >= 0.9.55
-BuildRequires: pkgconfig(afb-helpers)
+BuildRequires: pkgconfig(afb-libhelpers)
 
 %description
 The helloworld agl service gathers two bindings.
 - helloworld-skeleton: Increment a counter
 - helloworld-subscribe-event: Subscribe and get notified whether an event is emited
 
-# main package: default install widget in /var/local/lib/afm/applications/%%{name}
+# main package: default install in /var/local/lib/afm/applications/%%{name}
 %afm_package
-# test package: default install widget in /var/local/lib/afm/applications/%%{name}-test
+# test package: default install in /var/local/lib/afm/applications/%%{name}-test
 %afm_package_test
 %afm_package_redtest
 
@@ -58,6 +57,7 @@ The helloworld agl service gathers two bindings.
 %clean
 
 %changelog
+
 * Wed Jun 24 2020 IoT.bzh <armand.beneteau.iot.bzh> 8.99.6
 - Add the use of cmake template for run-redtest
 
@@ -78,4 +78,3 @@ The helloworld agl service gathers two bindings.
 
 * Fri Feb 14 2020 IoT.bzh <redpesk.list.iot.bzh> 8.99.5
 - Creation of the spec file from RedPesk generator
-
