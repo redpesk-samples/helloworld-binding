@@ -15,7 +15,7 @@
 ###########################################################################
 Name:    helloworld-binding
 Version: 1.0.0
-Release: 0%{?dist}
+Release: 2%{?dist}
 License: APL2.0
 Summary: helloworld service set to be used in redpesk
 URL:     https://github.com/redpesk-samples/helloworld-binding
