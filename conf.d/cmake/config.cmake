@@ -19,6 +19,7 @@
 # Project Info
 # ------------------
 set(PROJECT_NAME agl-service-helloworld)
+set(PROJECT_VERSION 1.0)
 set(PROJECT_PRETTY_NAME "Helloworld for AGL")
 set(PROJECT_DESCRIPTION "Provide an AGL Helloworld Binding")
 set(PROJECT_URL "https://gerrit.automotivelinux.org/gerrit/admin/repos/apps/agl-service-helloworld")
@@ -69,8 +70,8 @@ set (gcc_minimal_version 4.9)
 # -----------------------------
 set (PKG_REQUIRED_LIST
 	json-c
-	afb-daemon
-	afb-helpers
+	afb-binding
+	afb-libhelpers
 )
 
 
