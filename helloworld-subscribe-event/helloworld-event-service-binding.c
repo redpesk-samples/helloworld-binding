@@ -89,7 +89,7 @@ static const afb_verb_t verbs[] = {
 
 	{.verb = "subscribe", .session = AFB_SESSION_NONE, .callback = subscribeSample, .auth = NULL},
 	{.verb = "unsubscribe", .session = AFB_SESSION_NONE, .callback = unsubscribeSample, .auth = NULL},
-	{NULL}
+	{.verb = NULL}
 };
 
 const afb_binding_t afbBindingExport = {
