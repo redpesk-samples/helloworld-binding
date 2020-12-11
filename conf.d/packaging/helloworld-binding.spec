@@ -14,8 +14,8 @@
 # limitations under the License.
 ###########################################################################
 Name:    helloworld-binding
-Version: 1.0.0
-Release: 2%{?dist}
+Version: 8.99.7
+Release: 0%{?dist}
 License: APL2.0
 Summary: helloworld service set to be used in redpesk
 URL:     https://github.com/redpesk-samples/helloworld-binding
@@ -57,6 +57,9 @@ The helloworld agl service gathers two bindings.
 %clean
 
 %changelog
+
+* Fri Dec 11 2020 IoT.bzh <armand.beneteau.iot.bzh> 8.99.7
+- Adaptation for RedPesk 33
 
 * Wed Jun 24 2020 IoT.bzh <armand.beneteau.iot.bzh> 8.99.6
 - Add the use of cmake template for run-redtest

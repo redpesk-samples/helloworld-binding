@@ -74,7 +74,7 @@ static const afb_verb_t verbs[] = {
 	/*{ .verb = "ping"     , .session = AFB_SESSION_NONE, .callback = pingSample  , .auth = &_afb_auths_v2_monitor[1]},*/
 
 	{.verb = "testargs", .session = AFB_SESSION_NONE, .callback = testArgsSample, .auth = NULL},
-	{.verb = NULL}
+	{NULL}
 };
 
 const afb_binding_t afbBindingExport = {
