@@ -6,10 +6,10 @@ books:
     title: Helloworld binding
     description: 
     keywords:
-    author: IotBzh
-    version: master
     chapters:
-    - url: native_build.md
-      name: Native Build
-    - url: qemu-aarch64.md
-      name: Deployment in qemu aarch64
+    - url: 1-Architecture.md
+      name: Architecture presentation
+    - url: 2-Installation.md
+      name: Installation Guide
+    - url: 3-Usage.md
+      name: Usage Guide
