@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <json-c/json.h>
+#include "wrap-json.h"
 
 #define AFB_BINDING_VERSION 3
 #include <afb/afb-binding.h>
@@ -83,12 +84,112 @@ static void unsubscribeSample(afb_req_t request)
 	AFB_REQ_NOTICE(request, "Invoked at unsubscribe invocation");
 }
 
+static void infoSample(afb_req_t request) {
+
+	json_object *response,
+				*metadata, *groups,
+				*eventsgroup, *eventsverbs,
+				*infogroup, *infoverbs,
+				*suscribeverb, *suscribeusage, *suscribesample,
+				*unsuscribeverb, *unsuscribeusage, *unsuscribesample,
+				*timerverb, *timerusage, *timersample,
+				*infoverb, *infousage, *infosample;
+
+
+	// Defining verbs
+	wrap_json_pack(&suscribeusage, "{so*}",
+                            "data", NULL
+                        );
+	suscribesample = json_object_new_array();
+	wrap_json_pack(&suscribeverb, "{ss* ss* ss* so* sO}",
+                            "uid", "subscribe",
+                            "info", "subscribes to an event",
+							"api", "subscribe",
+							"usage", suscribeusage,
+							"sample", suscribesample
+                        );
+
+	wrap_json_pack(&unsuscribeusage, "{so*}",
+                            "data", NULL
+                        );
+	unsuscribesample = json_object_new_array();
+	wrap_json_pack(&unsuscribeverb, "{ss* ss* ss* so* sO}",
+                            "uid", "unsubscribe",
+                            "info", "unsubscribes to an event",
+							"api", "unsubscribe",
+							"usage", unsuscribeusage,
+							"sample", unsuscribesample
+                        );
+
+
+	wrap_json_pack(&timerusage, "{so*}",
+                            "data", NULL
+                        );
+	timersample = json_object_new_array();
+	wrap_json_pack(&timerverb, "{ss* ss* ss* so* sO}",
+                            "uid", "startTimer",
+                            "info", "starts a timer (use after an event subscription)",
+							"api", "startTimer",
+							"usage", timerusage,
+							"sample", timersample
+                        );
+
+	wrap_json_pack(&infousage, "{so*}",
+                            "data", NULL
+                        );
+	infosample = json_object_new_array();
+	wrap_json_pack(&infoverb, "{ss* ss* ss* so* sO}",
+                            "uid", "info",
+                            "info", "provides informations on this binding",
+							"api", "info",
+							"usage", infousage,
+							"sample", infosample
+                        );
+
+	// Defining groups of verbs
+	groups = json_object_new_array();
+	
+	eventsverbs = json_object_new_array();
+	json_object_array_add(eventsverbs, suscribeverb);
+	json_object_array_add(eventsverbs, unsuscribeverb);
+	json_object_array_add(eventsverbs, timerverb);
+	wrap_json_pack(&eventsgroup, "{ss ss sO}",
+                            "uid", "Events",
+                            "info", "verbs related to handling events",
+                            "verbs", eventsverbs
+                        );	
+	json_object_array_add(groups, eventsgroup);
+
+	infoverbs = json_object_new_array();
+	json_object_array_add(infoverbs, infoverb);
+	wrap_json_pack(&infogroup, "{ss ss sO}",
+                            "uid", "info",
+                            "info", "info verbs on this binding",
+                            "verbs", infoverbs
+                        );
+	
+	json_object_array_add(groups, infogroup);
+
+	// Populating metadata for info verb
+	wrap_json_pack(&metadata, "{ss* ss* ss*}", 
+                            "uid", "Helloworld-event",
+                            "info", "A simple Helloworld binding about handling events",
+                            "version", "1.0"
+                        );
+
+	// Generate global response
+	wrap_json_pack(&response, "{so, sO}","metadata", metadata, "groups", groups);
+	afb_req_success(request, response, NULL);
+}
+
+
 static const afb_verb_t verbs[] = {
 	/*Without security*/
 	{.verb = "startTimer", .session = AFB_SESSION_NONE, .callback = startTimer, .auth = NULL},
 
 	{.verb = "subscribe", .session = AFB_SESSION_NONE, .callback = subscribeSample, .auth = NULL},
 	{.verb = "unsubscribe", .session = AFB_SESSION_NONE, .callback = unsubscribeSample, .auth = NULL},
+	{.verb = "info", .session = AFB_SESSION_NONE, .callback = infoSample, .auth = NULL},
 	{NULL}
 };
 
