@@ -60,11 +60,11 @@ static void testArgsSample(afb_req_t request)
 				   json_object_get_string(queryJ));
 }
 
-static const struct afb_auth _afb_auths_v2_monitor[] = {
-	{.type = afb_auth_Permission, .text = "urn:AGL:permission:monitor:public:set"},
-	{.type = afb_auth_Permission, .text = "urn:AGL:permission:monitor:public:get"},
-	{.type = afb_auth_Or, .first = &_afb_auths_v2_monitor[1], .next = &_afb_auths_v2_monitor[0]}
-};
+// static const struct afb_auth _afb_auths_v2_monitor[] = {
+// 	{.type = afb_auth_Permission, .text = "urn:AGL:permission:monitor:public:set"},
+// 	{.type = afb_auth_Permission, .text = "urn:AGL:permission:monitor:public:get"},
+// 	{.type = afb_auth_Or, .first = &_afb_auths_v2_monitor[1], .next = &_afb_auths_v2_monitor[0]}
+// };
 
 static const afb_verb_t verbs[] = {
 	/*Without security*/

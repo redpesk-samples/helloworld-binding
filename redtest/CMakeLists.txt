@@ -14,9 +14,9 @@
 # limitations under the License.
 ###########################################################################
 
-set(BINDING_NAME "agl-service-helloworld")
-set(BINDING_TEST_NAME "agl-service-helloworld-test")
-set(PACKAGE_REDTEST "agl-service-helloworld-redtest")
+set(BINDING_NAME "helloworld-binding")
+set(BINDING_TEST_NAME "helloworld-binding-test")
+set(PACKAGE_REDTEST "helloworld-binding-redtest")
 
 configure_file(run-redtest.in run-redtest @ONLY)
 
