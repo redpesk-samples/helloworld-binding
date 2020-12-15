@@ -25,6 +25,7 @@ BuildRequires: afm-rpm-macros
 BuildRequires: cmake
 BuildRequires: gcc gcc-c++
 BuildRequires: afb-cmake-modules
+BuildRequires: systemd-devel
 BuildRequires: pkgconfig(json-c)
 BuildRequires: pkgconfig(libsystemd) >= 222
 BuildRequires: pkgconfig(libafb)
