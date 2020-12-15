@@ -35,4 +35,3 @@ _AFT.testVerbCb('testPingSuccessCallback','helloworld', 'ping', {}, _callback)
 
 _AFT.testVerbStatusError('testPingError', 'helloworld', 'pingfail', {})
 _AFT.testVerbResponseEqualsError('testPingErrorAndResponse', 'helloworld', 'pingfail', {}, "Ping Binder Daemon succeeds")
-_AFT.testVerbCbError('testPingErrorCallback', 'helloworld', 'pingfail', {}, _callbackError)
