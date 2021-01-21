@@ -1,6 +1,6 @@
 # Usage
 
-The [installation chapter](../helloworld/2-Installation.html) has generated the two binding:
+The [installation chapter](./2-Installation.html) has generated the two binding:
 
 * **helloworld-skeleton**
 

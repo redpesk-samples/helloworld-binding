@@ -4,7 +4,7 @@
 
 This part is only useful if you plan to install the package from source.
 
-We advise you to use the [local builder](../../getting_started/local_builder/docs/1_installation.html) for from source installation. The local builder comes with everything setup to build redpesk@ projects.
+We advise you to use the [local builder]({% chapter_link local-builder-doc.installation %}) for from source installation. The local builder comes with everything setup to build redpesk@ projects.
 
 Else install the building tools
 
