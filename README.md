@@ -1,6 +1,6 @@
 # agl-service-helloworld
 
-A binding example for AGL, implemented in a redpesk® context
+A binding example for AGL, implemented in a redpesk context
 ![rp_image](https://avatars2.githubusercontent.com/u/58298458?s=400&v=4?raw=true)
 
 ## Pre-requisites
@@ -15,7 +15,7 @@ To follow this tutorial without inconvenience, you have to get the following too
 
 - qemu (more details at a later stage)
 
-Moreover, in order to use redpesk® services, you must register [here](https://auth.redpesk.bzh/dex/auth?client_id=redpesk&redirect_uri=http%3A%2F%2Fruntime.redpesk.iot%3A8000%2Foauth%2Fcallback&response_type=code&scope=openid+profile+email&state=jIfn4y6gTEG87Asvj2DAxcK2WJv63ASW) ! You can either create your own account, or use your GitHub one.
+Moreover, in order to use redpesk services, you must register [here](https://auth.redpesk.bzh/dex/auth?client_id=redpesk&redirect_uri=http%3A%2F%2Fruntime.redpesk.iot%3A8000%2Foauth%2Fcallback&response_type=code&scope=openid+profile+email&state=jIfn4y6gTEG87Asvj2DAxcK2WJv63ASW) ! You can either create your own account, or use your GitHub one.
 
 ## Build
 
@@ -23,11 +23,11 @@ The aim of this part is to create a package which contained the agl-service-hell
 
 ### Specfile
 
-In order to correctly build an RPM package in the redpesk® context, your project should contain a specfile.
+In order to correctly build an RPM package in the redpesk context, your project should contain a specfile.
 The agl-service-helloworld specfile can be found at the following path:
 [conf.d/packaging/agl-service-helloworld.spec](conf.d/packaging/agl-service-helloworld.spec).
-This specfile will be used by redpesk® to describe how to build your AGL application. The resulting build produces an AGL widget that is embedded in a RPM.
-Please read the [documentation](https://docs.redpesk.bzh/) to correctly create and set your redpesk® project and application set up.
+This specfile will be used by redpesk to describe how to build your AGL application. The resulting build produces an AGL widget that is embedded in a RPM.
+Please read the [documentation](https://docs.redpesk.bzh/) to correctly create and set your redpesk project and application set up.
 You may have noticed that the agl-service-helloworld specfile contained several afm rpm macros, such as `%afm_package`.
 These macros allow to define a specfile template for AGL application.
 For example the three following macros indicate that this package is composed by three sub-packages
@@ -57,8 +57,8 @@ Both of these requirements are taking place in [conf.d/cmake/config.cmake](conf.
 
 ## Deploy on a board
 
-Now that an agl-service-helloworld package have been generated thanks to redpesk®, let's see how to install it on a board.
-Since redpesk® support cross-compilation, we can use either a x86_64 or aarch64 board to get your package installed in.
+Now that an agl-service-helloworld package have been generated thanks to redpesk, let's see how to install it on a board.
+Since redpesk support cross-compilation, we can use either a x86_64 or aarch64 board to get your package installed in.
 During this part, two cases will be studied:
 
 - Emulated x86_64 board: **qemu-x86_64**
@@ -67,9 +67,9 @@ During this part, two cases will be studied:
 
 If you want to use the agl-helloworld-service in an embedded aarch64 context, but do not have a real board, an other tutorial is present in the repository that you can find at the following [path](docs/qemu-aarch64.md).
 
-### Getting a redpesk® image
+### Getting a redpesk image
 
-Download the latest redpesk® image according to your board architecture.
+Download the latest redpesk image according to your board architecture.
 
 - **qemu-x86_64**
 
@@ -91,13 +91,13 @@ The image you have just downloaded has the following configuration:
 
 - password: root
 
-### Running a redpesk® image
+### Running a redpesk image
 
-Here we are, you are about to run the redpesk® image. This section will deal with both types of image: x86_64 & aarch64.
+Here we are, you are about to run the redpesk image. This section will deal with both types of image: x86_64 & aarch64.
 
 - **qemu-x86_64**
 
-First of all unzip the archive you have just downloaded to retrieve the redpesk® image.
+First of all unzip the archive you have just downloaded to retrieve the redpesk image.
 
 ```bash
 xz -d --verbose ${RP_IMAGE}
@@ -109,7 +109,7 @@ Then download the qemu-kvm package. For example, Ubuntu user can run:
 sudo apt install qemu-kvm
 ```
 
-Then, simply run the redpesk® image by doing:
+Then, simply run the redpesk image by doing:
 
 ```bash
 export TCP_PORT=3333
@@ -137,7 +137,7 @@ ssh root@localhost -p ${TCP_PORT}
 
 - **m3ulcb**
 
-The aim of this part is to flash the redpesk® raw image on a SDCard. To do so, bmaptools will be used. For example, ubuntu user can run:
+The aim of this part is to flash the redpesk raw image on a SDCard. To do so, bmaptools will be used. For example, ubuntu user can run:
 
 ```bash
 sudo apt-get install bmap-tools
@@ -176,9 +176,9 @@ ssh root@${YOUR_BOARD_IP}
 
 ### Installing your package
 
-There are no difference in the command related to your package installation, neither in a x86_64, nor in an aarch64 redpesk® distribution.
+There are no difference in the command related to your package installation, neither in a x86_64, nor in an aarch64 redpesk distribution.
 
-Once you get in your redpesk® image, you can proceed to the package installation.
+Once you get in your redpesk image, you can proceed to the package installation.
 As a reminder, the agl-helloworld-service gathered two sub-package the **agl-service-helloworld** and the **agl-service-helloworld-test**.
 To install the widget sub-package, you can simply run
 

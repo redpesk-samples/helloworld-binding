@@ -16,7 +16,7 @@ This tutorial require the following packages/commands to be installed:
 
 * **qemu-aarch64**
 
-## Getting a redpesk® image
+## Getting a redpesk image
 
 Because we want to emulate an aarch64 board, let's retrieve the m3ulcb image whis is used in the [README.md](https://github.com/redpesk/agl-service-helloworld/blob/master/README.md).
 
@@ -31,7 +31,7 @@ Then unzip it
 xz -d --verbose ${RP_IMAGE}
 ```
 
-## Running a redpesk® image
+## Running a redpesk image
 
 First of all, you must get the qemu-aarch64 functionality. For example, Ubuntu user can run
 
@@ -67,7 +67,7 @@ rm -r $MOUNT_DIR
 kpartx -d /dev/$generic_loop
 ```
 
-Once you have the kernel Image, you can finally run your redpesk® image.
+Once you have the kernel Image, you can finally run your redpesk image.
 
 ```bash
 export TCP_PORT=3333
