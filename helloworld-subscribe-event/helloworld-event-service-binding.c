@@ -27,29 +27,33 @@
 static afb_event_t event;
 static TimerHandleT *timer;
 
-static void timerCount()
+static int timerCount(TimerHandleT *context)
 {
 	static int timerCount = 0;
-	int listeners = 0;
+	int listeners;
 
+	timerCount++;
 	if(afb_event_is_valid(event))
 		listeners = afb_event_push(event, json_object_new_int(timerCount));
 
-	timerCount++;
+	return 1;
 }
 
 static void startTimer(afb_req_t request)
 {
-	char *timeruid;
-	timer = (TimerHandleT*)calloc (1, sizeof(TimerHandleT));
-	timer->delay = (uint) 1000;
-	timer->count = -1; // run forever
-	timer->uid = timeruid;
-	TimerEvtStart(request->api, timer, timerCount, NULL);
-
-	afb_req_success(request, NULL, "startTimer");
-
 	AFB_REQ_NOTICE(request, "Invoked at startTimer");
+	if (timer == NULL) {
+		timer = (TimerHandleT*)calloc (1, sizeof(TimerHandleT));
+		if (timer == NULL) {
+			afb_req_fail(request, "out-of-memory", NULL);
+			return;
+		}
+		timer->delay = (uint) 1000;
+		timer->count = -1; // run forever
+		timer->uid = "hello-timer";
+		TimerEvtStart(request->api, timer, timerCount, NULL);
+	}
+	afb_req_success(request, NULL, "startTimer");
 }
 
 static void subscribeSample(afb_req_t request)
