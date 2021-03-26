@@ -27,8 +27,7 @@ BuildRequires: gcc gcc-c++
 BuildRequires: afb-cmake-modules
 BuildRequires: pkgconfig(json-c)
 BuildRequires: pkgconfig(libsystemd) >= 222
-BuildRequires: pkgconfig(libafb)
-BuildRequires: pkgconfig(libmicrohttpd) >= 0.9.55
+BuildRequires: pkgconfig(afb-binding)
 BuildRequires: pkgconfig(afb-libhelpers)
 
 %description
