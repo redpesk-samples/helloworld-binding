@@ -1,0 +1,18 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+export VERSION=$(shell grep -E "^Version" ../*dsc | sed -r 's/^.*: (.*)-.*/\1/')
+export cmakefile=conf.d/cmake/config.cmake
+
+%:
+	dh $@
+
+override_dh_auto_configure:
+	sed -ri "s:(set\W*\(\W*PROJECT_NAME)(.*)(\)):\1 \"helloworld-binding\"\3:" ${cmakefile}
+	dh_auto_configure -- -DVERSION=${VERSION///} -DCMAKE_INSTALL_PREFIX=/var/local/lib/afm/applications/ -DCMAKE_INSTALL_LIBDIR:PATH=lib/${DEB_HOST_MULTIARCH}
+
+override_dh_auto_install:
+	dh_auto_install --destdir=/usr/src/packages/BUILD/debian/tmp
+
+override_dh_auto_test:
