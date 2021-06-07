@@ -1,6 +1,5 @@
 #!/bin/bash
 
-PACKAGE_REDTEST_NAME="@PACKAGE_REDTEST@"
 BINDING_NAME="@BINDING_NAME@"
 BINDING_TEST_NAME="@BINDING_TEST_NAME@"
 AFB_TEST_BINDER="afbtest"
@@ -21,14 +20,17 @@ fi
 # Get the binding test name
 TEST_BINDING=$(afm-util list -a | jq -r .[].id | grep ${BINDING_TEST_NAME})
 # Launch the test included in the pacakge
-afm-test ${TEST_BINDING}
+afm-util start ${TEST_BINDING}
 
 # Create the directory where the logs need to be
-mkdir -p /usr/lib/${PACKAGE_REDTEST_NAME}/redtest/logs
+mkdir -p /var/log/redtest/${BINDING_NAME}/
 
 # Copy the logs from source to new location
-cp -a /home/0/app-data/${BINDING_TEST_NAME}/. /usr/lib/${PACKAGE_REDTEST_NAME}/redtest/logs/
+cp -a /home/`id -u`/app-data/${BINDING_TEST_NAME}/* /var/log/redtest/${BINDING_NAME}/
+
+# Assigns the correct rights
+chmod 770 -R /var/log/redtest/${BINDING_NAME}/
+chown root:users -R /var/log/redtest/${BINDING_NAME}/
 
 # Stop the app that we were testing
 afm-util terminate $APP
-

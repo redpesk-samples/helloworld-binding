@@ -16,10 +16,9 @@
 
 set(BINDING_NAME "helloworld-binding")
 set(BINDING_TEST_NAME "helloworld-binding-test")
-set(PACKAGE_REDTEST "helloworld-binding-redtest")
 
 configure_file(run-redtest.in run-redtest @ONLY)
 
 install(PROGRAMS ${CMAKE_BINARY_DIR}/redtest/run-redtest
-	DESTINATION /usr/lib/${PACKAGE_REDTEST}/redtest)
+	DESTINATION /usr/libexec/redtest/${BINDING_NAME}/)
 
