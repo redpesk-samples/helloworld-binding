@@ -15,7 +15,7 @@ To follow this tutorial without inconvenience, you have to get the following too
 
 - qemu (more details at a later stage)
 
-Moreover, in order to use redpesk services, you must register [here](https://auth.redpesk.bzh/dex/auth?client_id=redpesk&redirect_uri=http%3A%2F%2Fruntime.redpesk.iot%3A8000%2Foauth%2Fcallback&response_type=code&scope=openid+profile+email&state=jIfn4y6gTEG87Asvj2DAxcK2WJv63ASW) ! You can either create your own account, or use your GitHub one.
+Moreover, in order to use redpesk services, you must register [here](https://community-app.redpesk.bzh/signup) ! You can either use a GitHub or a GitLab account.
 
 ## Build
 
@@ -74,15 +74,19 @@ Download the latest redpesk image according to your board architecture.
 - **qemu-x86_64**
 
 ```bash
-export RP_IMAGE=RedPesk-minimal-8_II-1.x86_64.raw.xz
-wget https://download.redpesk.bzh/redpesk-devel/releases/28/images/minimal/x86_64/$RP_IMAGE
+export RP_IMAGE=redpesk-devel-minimal-33-0.x86_64.raw.xz
+export SEC_MODEL=smack
+#export SEC_MODEL=selinux
+wget https://download.redpesk.bzh/redpesk-devel/releases/33/images/$SEC_MODEL/minimal/x86_64/latest/RP_IMAGE
 ```
 
-- **m3ulcb**
+- **Renesas m3ulcb**
 
 ```bash
-export RP_IMAGE=RedPesk-minimal-8_II-1.aarch64.raw.xz
-wget https://download.redpesk.bzh/redpesk-devel/releases/28/images/minimal/aarch64/latest/$RP_IMAGE
+export RP_IMAGE=redpesk-devel-minimal-33-0.aarch64.raw.xz
+export SEC_MODEL=smack
+#export SEC_MODEL=selinux
+wget https://download.redpesk.bzh/redpesk-devel/releases/33/images/$SEC_MODEL/minimal/m3/latest/$RP_IMAGE
 ```
 
 The image you have just downloaded has the following configuration:
