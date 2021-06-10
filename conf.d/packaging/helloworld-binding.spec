@@ -21,6 +21,8 @@ Summary: helloworld service set to be used in redpesk
 URL:     https://github.com/redpesk-samples/helloworld-binding
 Source0: %{name}-%{version}.tar.gz
 
+Requires: afb-binder
+
 BuildRequires: afm-rpm-macros
 BuildRequires: cmake
 BuildRequires: gcc gcc-c++
