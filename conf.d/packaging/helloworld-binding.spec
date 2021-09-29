@@ -14,7 +14,7 @@
 # limitations under the License.
 ###########################################################################
 Name:    helloworld-binding
-Version: 8.99.7
+Version: 1.0.1
 Release: 0%{?dist}
 License: APL2.0
 Summary: helloworld service set to be used in redpesk
