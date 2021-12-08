@@ -10,7 +10,7 @@ export cmakefile=conf.d/cmake/config.cmake
 
 override_dh_auto_configure:
 	sed -ri "s:(set\W*\(\W*PROJECT_NAME)(.*)(\)):\1 \"helloworld-binding\"\3:" ${cmakefile}
-	dh_auto_configure -- -DVERSION=${VERSION///} -DCMAKE_INSTALL_PREFIX=/var/local/lib/afm/applications/ -DCMAKE_INSTALL_LIBDIR:PATH=lib/${DEB_HOST_MULTIARCH} -DBUILD_TEST_WGT=TRUE
+	dh_auto_configure -- -DVERSION=${VERSION///} -DCMAKE_INSTALL_PREFIX=/var/local/lib/afm/applications/ -DCMAKE_INSTALL_LIBDIR:PATH=lib/${DEB_HOST_MULTIARCH} -DBUILD_TEST_WGT=TRUE -DCMAKE_INSTALL_LIBEXECDIR:PATH="/usr/libexec/"
 
 override_dh_auto_build:
 	dh_auto_build
