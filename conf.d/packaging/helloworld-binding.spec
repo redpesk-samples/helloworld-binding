@@ -18,6 +18,7 @@
 # To delete when afm-rpm-macros will be updated in all stacks
 %define afm_files_redtest \
 %defattr(770,root,users) \
+%dir %{_libexecdir}/redtest/ \
 %dir %{_libexecdir}/redtest/%{name}/ \
 %dir %{afm_extra_files_test} \
 %{_libexecdir}/redtest/%{name}/* \
