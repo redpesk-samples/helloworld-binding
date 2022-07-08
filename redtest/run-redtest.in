@@ -19,8 +19,12 @@ fi
 
 # Get the binding test name
 TEST_BINDING=$(afm-util list -a | jq -r .[].id | grep ${BINDING_TEST_NAME})
+
 # Launch the test included in the pacakge
-afm-util start ${TEST_BINDING}
+test_pid=$(afm-util start ${TEST_BINDING})
+
+# Wait for the end of the test run
+timeout 60 tail --pid=${test_pid} -f /dev/null
 
 # Create the directory where the logs need to be
 mkdir -p /var/log/redtest/${BINDING_NAME}/
