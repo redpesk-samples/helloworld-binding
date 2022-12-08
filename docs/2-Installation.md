@@ -25,12 +25,12 @@ Then the following dependencies:
 
 Fedora/OpenSuse:
 ```bash
-dnf install gcc-c++ make cmake afb-cmake-modules json-c-devel afb-binding-devel libmicrohttpd-devel afb-libhelpers-devel
+dnf install gcc-c++ make cmake afb-cmake-modules json-c-devel afb-binding-devel libmicrohttpd-devel afb-libhelpers-devel pkg-config
 ```
 
 Ubuntu:
 ```bash
-apt install gcc g++ make cmake afb-cmake-modules-bin libsystemd-dev libjson-c-dev afb-binding-dev libmicrohttpd-dev afb-libhelpers-dev
+apt install gcc g++ make cmake afb-cmake-modules libsystemd-dev libjson-c-dev afb-binding-dev libmicrohttpd-dev afb-libhelpers-dev pkg-config
 ```
 
 ## Build
