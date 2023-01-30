@@ -1,0 +1,11 @@
+name: redpesk-github-ci
+run-name: ${{ github.actor }} has started a Github action
+on: [pull_request]
+jobs:
+  build-application:
+    runs-on: ubuntu-latest
+    steps:
+      - run: wget -O - "$RP_INSTALL_RPCLI_URL" | bash -s -- --rp-cli --no-recommends
+      - run: rp-cli misc add-connection "$RP_REMOTE_FACTORY_NAME" --url "$RP_REMOTE_FACTORY_URL" --token "$RP_REMOTE_FACTORY_TOKEN"
+      - run: rp-cli misc use "$RP_REMOTE_FACTORY_NAME"
+      - run: rp-cli misc status
