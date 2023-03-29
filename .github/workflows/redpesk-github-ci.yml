@@ -1,0 +1,50 @@
+name: redpesk-github-ci
+run-name: ${{ github.actor }} has started a Github action
+on: [pull_request, workflow_dispatch]
+
+env:
+  RP_REMOTE_FACTORY_URL: 'https://community-app.redpesk.bzh'
+  RP_REMOTE_FACTORY_TOKEN: ${{ secrets.RP_REMOTE_FACTORY_TOKEN }}
+  RP_FACTORY_PROJECT: 'validate-cations-2'
+  RP_FACTORY_APP: 'validate actions'
+  GH_SOURCE_BRANCH: ${{ github.head_ref }}
+  GH_TARGET_BRANCH: ${{ github.base_ref }}
+  GH_AUTHOR: ${{ github.actor }}
+  GH_PR_NUMBER: ${{ github.event.pull_request.number }}
+
+jobs:
+  build-application:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install redpesk-cli in the runner
+        uses: redpesk-infra/github-setup-rp-cli-action@v1
+        with:
+          factory-url: "$RP_REMOTE_FACTORY_URL"
+          factory-token: "$RP_REMOTE_FACTORY_TOKEN"
+
+      - name: Change branch in factory to source branch
+        run: rp-cli applications update "$RP_FACTORY_APP" -p "$RP_FACTORY_PROJECT" --source-rev "$GH_SOURCE_BRANCH"
+
+      - name: Run application build in redpesk factory
+        run: rp-cli applications build "$RP_FACTORY_APP" -p "$RP_FACTORY_PROJECT" --comment "[Github CI] Started for PR '$GH_PR_NUMBER', from author '$GH_AUTHOR'" -v
+
+      - name: Handle possible failure
+        if: ${{ failure() }}
+        run: rp-cli applications update "$RP_FACTORY_APP" -p "$RP_FACTORY_PROJECT" --source-rev "$GH_TARGET_BRANCH"
+  
+  test-application:
+    runs-on: ubuntu-latest
+    needs: build-application
+    steps:
+      - name: Install redpesk-cli in the runner
+        uses: redpesk-infra/github-setup-rp-cli-action@v1
+        with:
+          factory-url: "$RP_REMOTE_FACTORY_URL"
+          factory-token: "$RP_REMOTE_FACTORY_TOKEN"
+
+      - name: Run application test in redpesk factory
+        run: rp-cli applications test "$RP_FACTORY_APP" -p "$RP_FACTORY_PROJECT" --comment "[Github CI] Started for PR '$GH_PR_NUMBER', from author '$GH_AUTHOR'" -v
+
+      - name: Change branch in redpesk factory
+        if: ${{ always() }}
+        run: rp-cli applications update "$RP_FACTORY_APP" -p "$RP_FACTORY_PROJECT" --source-rev "$GH_TARGET_BRANCH"
