@@ -1,0 +1,30 @@
+rp-manifest: 1
+id: @PROJECT_NAME@-test
+version: @PROJECT_VERSION@
+name: @PROJECT_NAME@-test
+description: Test widget used to launch tests for the project @PROJECT_NAME@
+author: Romain Forlot <romain.forlot@iot.bzh>
+license: APL2.0
+required-permission:
+  urn:AGL:permission::partner:read-afbtest:
+    name: urn:AGL:permission::partner:read-afbtest
+    value: required
+  urn:AGL:permission::partner:execute-shell:
+    name: urn:AGL:permission::partner:execute-shell
+    value: required
+file-properties:
+  - name: bin/launcher
+    value: executable
+targets:
+  - target: main
+    content:
+      src: bin/launcher
+      type: application/vnd.agl.native
+    icon:
+      - src: @PROJECT_ICON@
+    required-binding:
+      - name: aft
+        value: extern
+    required-api:
+      - name: @API_NAME@
+        value: auto
