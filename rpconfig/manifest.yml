@@ -1,0 +1,22 @@
+%YAML 1.2
+---
+# .rpconfig/manifest.yml documentation: http://redpesk-doc-internal.lorient.iot/docs/en/master/developer-guides/manifest.yml.html
+# This file is used by afb-app-manager when installing a packaged binding, mainly to set the correct permissions
+rp-manifest: 1.0
+id: helloworld-binding
+version: 2.0.0
+description: Provides a simple API showcasing the basics of binding development 
+author: Louis-Baptiste Sobolewski <lb.sobolewski@iot.bzh>
+license: APL2.0
+
+targets:
+  - target: main
+    content:
+      type: application/vnd.agl.service
+      src:
+    provided-api:
+      - name: helloworld
+        value: ws
+    required-binding:
+      - name: lib/helloworld-binding.so
+        value: local
