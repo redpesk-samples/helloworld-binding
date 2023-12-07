@@ -128,6 +128,7 @@ static void sum_verb(afb_req_t req, unsigned nparams, afb_data_t const *params)
     size_t items;
     afb_data_t afb_arg, reply;
     struct json_object *arg, *item;
+    const char * const err_msg = "parameter should be a JSON array of integers";
 
     // Publish an event that a verb has been called
     pub_verb_called_ev(req);
@@ -161,7 +162,6 @@ static void sum_verb(afb_req_t req, unsigned nparams, afb_data_t const *params)
     return;
 
 err:
-    const char * const err_msg = "parameter should be a JSON array of integers";
     AFB_API_ERROR(afb_req_get_api(req), err_msg);
     afb_create_data_copy(&reply, AFB_PREDEFINED_TYPE_STRINGZ, err_msg, strlen(err_msg) + 1);
     afb_req_reply(req, -1, 1, &reply);
