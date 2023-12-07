@@ -26,7 +26,8 @@ Provides a simple API showcasing the basics of binding development
 %install
 %cmake_install
 
-%file
+%files
+%defattr(-,root,root)
 %dir %{_afmappdir}/%{name}
 %{_afmappdir}
 
