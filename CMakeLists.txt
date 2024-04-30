@@ -28,6 +28,7 @@ endif(CPP)
 
 # Build
 add_library(helloworld-binding SHARED ${SRC})
+target_link_libraries(helloworld-binding ${deps_LDFLAGS})
 # This version script is a linker script which exports all symbols named "afbBinding*" and makes all the other symbols local only
 pkg_get_variable(vscript afb-binding version_script)
 if(vscript)
