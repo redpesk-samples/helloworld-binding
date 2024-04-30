@@ -153,7 +153,7 @@ static void sum_verb(afb_req_t req, unsigned nparams, afb_data_t const *params)
         // If an item is not an integer, stop and fail
         if (json_object_get_type(item) != json_type_int)
             goto err;
-        sum += json_object_get_int(item);
+        sum += json_object_get_int64(item);
     }
 
     // Reply
