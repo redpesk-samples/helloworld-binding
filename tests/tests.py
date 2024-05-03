@@ -1,6 +1,11 @@
-from afb_test import AFBTestCase, run_afb_binding_tests
+from afb_test import AFBTestCase, configure_afb_binding_tests, run_afb_binding_tests
 
 import libafb
+
+bindings = {"helloworld": f"libhelloworld-binding.so"}
+
+def setUpModule():
+    configure_afb_binding_tests(bindings=bindings)
 
 class TestHelloWorld(AFBTestCase):
 
@@ -29,6 +34,7 @@ class TestHelloWorld(AFBTestCase):
 
         r = libafb.callsync(self.binder, "helloworld", "hello", [1, 2, 3])
         assert r.args == ("Hello [1,2,3]!",)
+
 
     def test_hello_evt(self):
         """Test hello event"""
@@ -64,5 +70,5 @@ class TestHelloWorld(AFBTestCase):
         with self.assertEventEmitted("helloworld", "verb_called"):
             libafb.callsync(self.binder, "helloworld", "sum", [42])
 
-
-run_afb_binding_tests(bindings={"helloworld": f"libhelloworld-binding.so"})
+if __name__ == "__main__":
+    run_afb_binding_tests(bindings)
