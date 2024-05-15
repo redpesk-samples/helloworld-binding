@@ -4,15 +4,17 @@ import libafb
 
 bindings = {"helloworld": f"libhelloworld-binding.so"}
 
+
 def setUpModule():
     configure_afb_binding_tests(bindings=bindings)
+
 
 class TestHelloWorld(AFBTestCase):
 
     def test_hello_verb(self):
         """Test hello verb"""
-        with self.assertRaises(RuntimeError):
-            r = libafb.callsync(self.binder, "helloworld", "hello", None)
+        r = libafb.callsync(self.binder, "helloworld", "hello", None)
+        assert r.args == ("Hello world!",)
 
         r = libafb.callsync(self.binder, "helloworld", "hello")
         assert r.args == ("Hello world!",)
@@ -35,6 +37,27 @@ class TestHelloWorld(AFBTestCase):
         r = libafb.callsync(self.binder, "helloworld", "hello", [1, 2, 3])
         assert r.args == ("Hello [1,2,3]!",)
 
+        r = libafb.callsync(self.binder, "helloworld", "hello", 2**63 - 1)
+        assert r.args == ("Hello " + str(2**63 - 1) + "!",)
+
+        r = libafb.callsync(self.binder, "helloworld", "hello", -(2**63))
+        assert r.args == ("Hello " + str(-(2**63)) + "!",)
+
+        """Test that the length of the entry does not raise an exception"""
+        entry = "a" * 200
+        r = libafb.callsync(self.binder, "helloworld", "hello", entry)
+        assert len(r.args[0]) == 99
+
+        """End of that test (The print(r.args is more important than the assert there))"""
+
+    def test_hello_verb_fail(self):
+        """Test Verb Failing"""
+
+        with self.assertRaises(ValueError):
+            r = libafb.callsync(self.binder, "helloworld", "hello", 2**63)
+
+        with self.assertRaises(ValueError):
+            r = libafb.callsync(self.binder, "helloworld", "hello", 2**64 - 1)
 
     def test_hello_evt(self):
         """Test hello event"""
@@ -48,6 +71,7 @@ class TestHelloWorld(AFBTestCase):
             ([0, -10], -10),
             ([2**40], 2**40),
             ([2**63 - 1], 2**63 - 1),
+            ([-(2**63)], -(2**63)),
             ([], 0),
         ]:
             r = libafb.callsync(self.binder, "helloworld", "sum", arg)
@@ -56,6 +80,10 @@ class TestHelloWorld(AFBTestCase):
         # check integer limits
         with self.assertRaises(ValueError):
             libafb.callsync(self.binder, "helloworld", "sum", [2**64])
+
+        # check integer limits
+        with self.assertRaises(ValueError):
+            libafb.callsync(self.binder, "helloworld", "sum", [2**63])
 
         # check no argument raises an error
         with self.assertRaises(RuntimeError):
@@ -69,6 +97,7 @@ class TestHelloWorld(AFBTestCase):
         """Test sum event"""
         with self.assertEventEmitted("helloworld", "verb_called"):
             libafb.callsync(self.binder, "helloworld", "sum", [42])
+
 
 if __name__ == "__main__":
     run_afb_binding_tests(bindings)
