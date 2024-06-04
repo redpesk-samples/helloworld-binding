@@ -18,7 +18,7 @@
 ## Changed
 
 - single `CMakeLists.txt` file
-  - standalone: no AFM macros, no `conf.d/cmake/config.cmake`
+  - standalone: no afb-cmake-modules macros, no `conf.d/cmake/config.cmake`
   - but still less than 40 lines
 - packaging
   - removed v3 dependencies
@@ -40,6 +40,7 @@ Differences:
 | JSON object parsing | JSON array iteration |
 | JSON creation       |                      |
 | timers              |                      |
+| HTML5 app           |                      |
 |                     | client context       |
 |                     | mainctl              |
 |                     | C++ wrapper          |
