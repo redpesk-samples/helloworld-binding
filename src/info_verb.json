@@ -1,0 +1,42 @@
+{
+    "metadata": {
+        "uid": "helloworld",
+        "info": "Hello world binding",
+        "version": "2.0.0"
+    },
+    "groups": [
+        {
+            "uid": "helloworld",
+            "info": "Hello world API",
+            "verbs": [
+                {
+                    "uid": "hello",
+                    "info": "Echoes the input argument",
+                    "verb": "hello",
+                    "sample": [
+                        "Bob",
+                        42
+                    ]
+                },
+                {
+                    "uid": "sum",
+                    "verb": "sum",
+                    "info": "Sums the input arguments",
+                    "sample": [
+                        [
+                            1,
+                            2,
+                            3,
+                            10
+                        ]
+                    ]
+                },
+                {
+                    "uid": "info",
+                    "info": "Get binding info",
+                    "verb": "info"
+                }
+            ]
+        }
+    ]
+}

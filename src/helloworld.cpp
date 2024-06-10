@@ -139,12 +139,33 @@ err:
     req.reply(-1, reply);
 }
 
+extern const char* info_verb_json;
+
+static void info_verb(afb::req req, afb::received_data params)
+{
+    enum json_tokener_error jerr;
+
+    json_object *info_obj = json_tokener_parse_verbose(info_verb_json, &jerr);
+    if (info_obj == NULL || jerr != json_tokener_success) {
+        const char *err_msg = "error parsing info() verb description";
+        AFB_API_ERROR(afb_req_get_api(req), err_msg);
+        afb::data reply(afb::STRINGZ(), err_msg, strlen(err_msg) + 1);
+        req.reply(-1, reply);
+        return;
+    }
+
+    afb::data reply(afb::JSON_C(), info_obj, 0, (void (*)(void*))json_object_put, info_obj);
+    req.reply(0, reply);
+    return;
+}
+
 /************
 BINDING SETUP
 ************/
 
 // List all the verbs we want to expose
 static const afb_verb_t verbs[] = {
+    afb::verb<info_verb>("info"),
     afb::verb<hello_verb>("hello"),
     afb::verb<sum_verb>("sum"),
     afb::verbend() // This has the same meaning as the '\0' at the end of a string

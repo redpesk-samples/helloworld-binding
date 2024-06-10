@@ -26,9 +26,21 @@ else()
     set(SRC ./src/helloworld.c)
 endif(CPP)
 
-# Build
+
 add_library(helloworld-binding SHARED ${SRC})
+
+target_sources(helloworld-binding PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/info_verb.c)
+
+add_custom_command(
+    OUTPUT info_verb.c
+    COMMAND echo "const char *info_verb_json = " > ${CMAKE_CURRENT_BINARY_DIR}/info_verb.c
+    COMMAND sed 's/\"/\\\\\"/g\;s/^[ \t]*/&\"/\;s/[ \t]*$$/\"&/' ${CMAKE_CURRENT_LIST_DIR}/src/info_verb.json >> ${CMAKE_CURRENT_BINARY_DIR}/info_verb.c
+    COMMAND echo '\;' >> ${CMAKE_CURRENT_BINARY_DIR}/info_verb.c
+    DEPENDS src/info_verb.json
+)
+
 target_link_libraries(helloworld-binding ${deps_LDFLAGS})
+
 # This version script is a linker script which exports all symbols named "afbBinding*" and makes all the other symbols local only
 pkg_get_variable(vscript afb-binding version_script)
 if(vscript)
