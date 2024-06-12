@@ -73,14 +73,18 @@ static void hello_verb(afb::req req, afb::received_data params)
 {
     int rc;
     const char *who = "world";
+    const char *who_arg;
     char reply_str[100];
 
     // Publish an event that a verb has been called
     pub_verb_called_ev(req);
 
     // Read request parameter; if there is one and it is convertable to a string, replace "who" with its content
-    if (req.try_convert(0, afb::STRINGZ()))
-        who = (const char*)*(params[0]);
+    if (req.try_convert(0, afb::STRINGZ())) {
+        who_arg = (const char*)*(params[0]);
+        if (strcmp("null", who_arg) != 0)
+            who = who_arg;
+    }
     
     // Create reply string; use snprintf to avoid overflows caused by a long enough parameter
     rc = snprintf(reply_str, sizeof(reply_str), "Hello %s!", who);
@@ -122,7 +126,7 @@ static void sum_verb(afb::req req, afb::received_data params)
         // If an item is not an integer, stop and fail
         if (json_object_get_type(item) != json_type_int)
             goto err;
-        sum += json_object_get_int(item);
+        sum += json_object_get_int64(item);
     }
 
     // Reply

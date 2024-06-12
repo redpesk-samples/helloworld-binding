@@ -109,7 +109,6 @@ static void hello_verb(afb_req_t req, unsigned nparams, afb_data_t const *params
     if (rc == 0) {
         who_arg = afb_data_ro_pointer(name);
         if (strcmp("null", who_arg) != 0)
-
             who = who_arg;
     }
 
