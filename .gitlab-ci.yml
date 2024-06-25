@@ -1,0 +1,30 @@
+stages:
+  - lint
+  - test
+
+default:
+  tags:
+    - redpesk-batz
+
+lint:
+  stage: lint
+  needs: []
+  script:
+    - bash -x tests/ci/lint.sh
+  allow_failure: true
+
+test:
+  stage: test
+  needs: []
+  script:
+    - bash -x tests/ci/test_and_coverage.sh
+  artifacts:
+    paths:
+      - html/
+    expose_as: 'Coverage report'
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+  # extract coverage from lcov --list output
+  coverage: '/Total:\|(\d+\.?\d+\%)/'
