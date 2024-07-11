@@ -19,6 +19,17 @@ pkg_check_modules(deps REQUIRED
     afb-binding>=4.1.0
 )
 
+# generation of compiled version of info
+set(infoj ${CMAKE_SOURCE_DIR}/src/info_verb.json)
+set(infoc ${CMAKE_BINARY_DIR}/info_verb.c)
+add_custom_command(
+    OUTPUT ${infoc}
+    COMMAND echo "const char *info_verb_json = " > ${infoc}
+    COMMAND sed 's/\"/\\\\\"/g\;s/^[ \t]*/&\"/\;s/[ \t]*$$/\"/' ${infoj} >> ${infoc}
+    COMMAND echo '\;' >> ${infoc}
+    DEPENDS ${infoj}
+)
+
 # Process option "CPP": use the CPP implementation if true, use the C one if false
 if(CPP)
     set(SRC ./src/helloworld.cpp)
@@ -26,19 +37,8 @@ else()
     set(SRC ./src/helloworld.c)
 endif(CPP)
 
-
-add_library(helloworld-binding SHARED ${SRC})
-
-target_sources(helloworld-binding PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/info_verb.c)
-
-add_custom_command(
-    OUTPUT info_verb.c
-    COMMAND echo "const char *info_verb_json = " > ${CMAKE_CURRENT_BINARY_DIR}/info_verb.c
-    COMMAND sed 's/\"/\\\\\"/g\;s/^[ \t]*/&\"/\;s/[ \t]*$$/\"&/' ${CMAKE_CURRENT_LIST_DIR}/src/info_verb.json >> ${CMAKE_CURRENT_BINARY_DIR}/info_verb.c
-    COMMAND echo '\;' >> ${CMAKE_CURRENT_BINARY_DIR}/info_verb.c
-    DEPENDS src/info_verb.json
-)
-
+add_library(helloworld-binding SHARED ${SRC} ${infoc})
+target_compile_options(helloworld-binding PRIVATE ${deps_CFLAGS})
 target_link_libraries(helloworld-binding ${deps_LDFLAGS})
 
 # This version script is a linker script which exports all symbols named "afbBinding*" and makes all the other symbols local only
