@@ -13,10 +13,10 @@ targets:
   - target: main
     content:
       type: application/vnd.agl.service
-      src: lib/libhelloworld-binding.so
+      src: lib/helloworld-binding.so
     provided-api:
       - name: helloworld
         value: ws
     required-binding:
-      - name: lib/libhelloworld-binding.so
+      - name: lib/helloworld-binding.so
         value: local

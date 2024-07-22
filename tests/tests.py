@@ -2,7 +2,7 @@ from afb_test import AFBTestCase, configure_afb_binding_tests, run_afb_binding_t
 
 import libafb
 
-bindings = {"helloworld": f"libhelloworld-binding.so"}
+bindings = {"helloworld": f"helloworld-binding.so"}
 
 
 def setUpModule():
