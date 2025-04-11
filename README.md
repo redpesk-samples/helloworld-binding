@@ -1,6 +1,6 @@
-# agl-service-helloworld
+# helloworld-binding
 
-A binding example for AGL, implemented in a redpesk context
+A binding example, implemented in a redpesk context
 ![rp_image](https://avatars2.githubusercontent.com/u/58298458?s=400&v=4?raw=true)
 
 ## Pre-requisites
@@ -17,76 +17,47 @@ To follow this tutorial without inconvenience, you have to get the following too
 
 Moreover, in order to use redpesk services, you must register [here](https://community-app.redpesk.bzh/signup) ! You can either use a GitHub or a GitLab account.
 
-## Build
+## Project configuration
 
-The aim of this part is to create a package which contained the agl-service-helloworld application.
+Refer to the [documentation](https://docs.redpesk.bzh/) for detailed guidance on creating and configuring your redpesk project and application setup.
 
-### Specfile
+#### ⚠️ Key consideration
 
-In order to correctly build an RPM package in the redpesk context, your project should contain a specfile.
-The agl-service-helloworld specfile can be found at the following path:
-[conf.d/packaging/agl-service-helloworld.spec](conf.d/packaging/agl-service-helloworld.spec).
-This specfile will be used by redpesk to describe how to build your AGL application. The resulting build produces an AGL widget that is embedded in a RPM.
-Please read the [documentation](https://docs.redpesk.bzh/) to correctly create and set your redpesk project and application set up.
-You may have noticed that the agl-service-helloworld specfile contained several afm rpm macros, such as `%afm_package`.
-These macros allow to define a specfile template for AGL application.
-For example the three following macros indicate that this package is composed by three sub-packages
+Ensure that the application name specified in your spec file matches the name used during the application's creation.
 
-- `%afm_package` &rarr; agl-service-helloworld: which is basically the core widget
-
-- `%afm_package_test` &rarr; agl-service-helloworld-test: which is a widget, implementing the tests used to validate the source code. Test source files are located in [test](test) directory
-
-- `%afm_package_redtest` &rarr; agl-service-helloworld-redtest: this package is the one used by the RedPesk infrastructure to run the test. It requires the package agl-service-helloworld-test where the tests truly are. In the case of agl binding test (this is the case here), this package only contains a script that calls the right command to run the agl tests. This script can be found in the [redtest](redtest) directory.
-
-### Project configuration
-
-However, to fit the template introduced by afm rpm macros, your project should match two requirements.
-Both of these requirements are taking place in [conf.d/cmake/config.cmake](conf.d/cmake/config.cmake).
-
-- **Project name**
-  Your project name should match your package name.
-  Here for example in the agl-helloworld-service config.cmake, we can see:
-  `set(PROJECT_NAME agl-service-helloworld)`
-  Thus the package must be named `agl-service-helloworld`.
-
-- **Project version**
-  For convenience, we advise you not to set the project version in the config.cmake.
-  ~~`set(PROJECT_VERSION "1.0")`~~
-  By doing so, your project version will automatically be set to the version listed in the specfile.
-  This tweak allows afm macros to be fully effective regarding your widget management once deployed on a board.
 
 ## Deploy on a board
 
-Now that an agl-service-helloworld package have been generated thanks to redpesk, let's see how to install it on a board.
-Since redpesk support cross-compilation, we can use either a x86_64 or aarch64 board to get your package installed in.
-During this part, two cases will be studied:
+Now that a helloworld-binding package has been generated using redpesk, let's see how to install it on a board. Since redpesk supports cross-compilation, we will use an emulated x86_64 board (**qemu-x86_64**) for this purpose.
 
-- Emulated x86_64 board: **qemu-x86_64**
-
-- Real aarch64 board: **m3ulcb**
-
-If you want to use the agl-helloworld-service in an embedded aarch64 context, but do not have a real board, an other tutorial is present in the repository that you can find at the following [path](docs/qemu-aarch64.md).
+Refer to the [documentation](https://docs.redpesk.bzh/docs/en/master/redpesk-os/boards/docs/boards/qemu.html#download-the-x86_64-image) for detailed instructions on installing QEMU.
 
 ### Getting a redpesk image
 
 Download the latest redpesk image according to your board architecture.
 
-- **qemu-x86_64**
+For more details, please refer to the documentation [here](https://docs.redpesk.bzh/docs/en/master/redpesk-os/boards/docs/boards/up-board.html).
 
 ```bash
-export RP_IMAGE=redpesk-devel-minimal-33-0.x86_64.raw.xz
-export SEC_MODEL=smack
-#export SEC_MODEL=selinux
-wget https://download.redpesk.bzh/redpesk-devel/releases/33/images/$SEC_MODEL/minimal/x86_64/latest/RP_IMAGE
+$ mkdir ~/redpeskimage
+
+$ cd ~/redpeskimage
+
+$ wget -r -nd -nc --no-parent --accept-regex='redpesk.*smack.*\.(bmap|xz|sha256)' --reject-regex '(image\.raw|ova|index)' 'https://download.redpesk.bzh/redpesk-lts/batz-2.1-update/images/smack/minimal/x86_64/generic/'
+
+$ tar xJf redpesk*.tar.xz
 ```
 
-- **Renesas m3ulcb**
+### Running a redpesk image
+
+Here we are, you are about to run the redpesk image. 
 
 ```bash
-export RP_IMAGE=redpesk-devel-minimal-33-0.aarch64.raw.xz
-export SEC_MODEL=smack
-#export SEC_MODEL=selinux
-wget https://download.redpesk.bzh/redpesk-devel/releases/33/images/$SEC_MODEL/minimal/m3/latest/$RP_IMAGE
+$ ls
+redpesk-lts-batz-2.1-update-smack-minimal-x86_64-generic-2025_04_10_0641.bmap           Redpesk-OS.img
+redpesk-lts-batz-2.1-update-smack-minimal-x86_64-generic-2025_04_10_0641.tar            Redpesk-OS.img.bmap
+redpesk-lts-batz-2.1-update-smack-minimal-x86_64-generic-2025_04_10_0641.tar.xz.sha256
+
 ```
 
 The image you have just downloaded has the following configuration:
@@ -95,40 +66,24 @@ The image you have just downloaded has the following configuration:
 
 - password: root
 
-### Running a redpesk image
-
-Here we are, you are about to run the redpesk image. This section will deal with both types of image: x86_64 & aarch64.
-
-- **qemu-x86_64**
-
-First of all unzip the archive you have just downloaded to retrieve the redpesk image.
-
-```bash
-xz -d --verbose ${RP_IMAGE}
-```
-
-Then download the qemu-kvm package. For example, Ubuntu user can run:
-
-```bash
-sudo apt install qemu-kvm
-```
-
 Then, simply run the redpesk image by doing:
 
 ```bash
 export TCP_PORT=3333
 qemu-system-x86_64 \
-        -hda ${PATH_TO_REDPESK_IMAGE} \
-        -enable-kvm \
-        -bios /usr/share/qemu/OVMF.fd \
-        -machine q35 \
-        -m 2048 \
-        -cpu kvm64 \
-        -cpu qemu64,+ssse3,+sse4.1,+sse4.2,+popcnt \
-        -net nic \
-        -net user,hostfwd=tcp::${TCP_PORT}-:22 \
-        -nographic \
-        -snapshot
+  -hda Redpesk-OS.img \
+  -enable-kvm \
+  -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE.fd \
+  -drive if=pflash,format=raw,file=/usr/share/OVMF/OVMF_VARS.fd \
+  -machine q35 \
+  -m 2048 \
+  -cpu kvm64 \
+  -cpu qemu64,+ssse3,+sse4.1,+sse4.2,+popcnt \
+  -net nic \
+  -net user,hostfwd=tcp::${TCP_PORT}-:22 \
+  -nographic \
+  -snapshot
+
 ```
 
 You may have noticed that in the previous command we allow the user to connect to the emulated board by establishing a ssh connection through the port `${TCP_PORT}`.
@@ -139,201 +94,247 @@ You can access your emulated board with the following command:
 ssh root@localhost -p ${TCP_PORT}
 ```
 
-- **m3ulcb**
-
-The aim of this part is to flash the redpesk raw image on a SDCard. To do so, bmaptools will be used. For example, ubuntu user can run:
-
-```bash
-sudo apt-get install bmap-tools
-```
-
-Then insert your SDCard and retrieve its device name. To do so you can execute the following command:
-
-```bash
-lsblk -dli -o NAME,TYPE,HOTPLUG | grep "disk.*1$"
-```
-
-Then export it into the environment variable DEVICE, for example:
-
-```bash
-export DEVICE="/dev/sdb"
-```
-
-If the SDCard is mounted, umount it.
-
-```bash
-sudo unmount ${DEVICE}
-```
-
-Now write the image onto the SDCard.
-
-```bash
-sudo bmaptool copy ${RP_IMAGE} ${DEVICE}
-```
-
-Since then, your SDCard is bootable. You can access it by using the ssh command:
-
-```bash
-export YOUR_BOARD_IP=192.168.1.X
-ssh root@${YOUR_BOARD_IP}
-```
-
 ### Installing your package
 
-There are no difference in the command related to your package installation, neither in a x86_64, nor in an aarch64 redpesk distribution.
+After building your package, refer to the documentation [here](https://docs.redpesk.bzh/docs/en/master/getting_started/docs/deployment.html), specifically section 4: "Install your package," to proceed with the installation.
 
-Once you get in your redpesk image, you can proceed to the package installation.
-As a reminder, the agl-helloworld-service gathered two sub-package the **agl-service-helloworld** and the **agl-service-helloworld-test**.
-To install the widget sub-package, you can simply run
-
-```bash
-dnf install agl-service-helloworld
-```
 
 If you correctly set your project name and version as explained in the **Build** part, you should have the following output during the package installation
 
 ```bash
-[root@localhost ~] dnf install agl-service-helloworld
-NOTICE: -- Install redpesk widget from /var/local/lib/afm/applications/agl-service-helloworld --
+[root@localhost ~]# dnf install helloworld-binding --nogpgcheck
+Updating Subscription Management repositories.
+Unable to read consumer identity
+
+This system is not registered with an entitlement server. You can use subscription-manager to register.
+
+hello-2_f098e52f--redpesk-lts-batz-2.1-update-build                                  4.8 kB/s | 2.1 kB     00:00    
+redpesk-lts-batz-2.1-update-build                                                    2.0 MB/s | 6.3 MB     00:03    
+redpesk-lts-batz-2.1-update-middleware-build                                         608 kB/s | 324 kB     00:00    
+redpesk-config-build                                                                 3.5 kB/s | 1.6 kB     00:00    
+RedPesk Middleware batz-2.1 Update - x86_64                                          658 kB/s | 323 kB     00:00    
+RedPesk Baseos batz-2.1 Update - x86_64                                              9.0 MB/s | 7.9 MB     00:00    
+RedPesk Config                                                                       2.8 kB/s | 903  B     00:00    
+Dependencies resolved.
+=====================================================================================================================
+ Package            Arch   Version                         Repository                                           Size
+=====================================================================================================================
+Installing:
+ helloworld-binding x86_64 1.1.1+20240722+30+ga9c2297-1.hello.2_f098e52f.rpbatz_1_1
+                                                           hello-2_f098e52f--redpesk-lts-batz-2.1-update-build  13 k
+
+Transaction Summary
+=====================================================================================================================
+Install  1 Package
+
+Total download size: 13 k
+Installed size: 16 k
+Is this ok [y/N]: y
+Downloading Packages:
+helloworld-binding-1.1.1+20240722+30+ga9c2297-1.hello.2_f098e52f.rpbatz_1_1.x86_64.r  64 kB/s |  13 kB     00:00    
+---------------------------------------------------------------------------------------------------------------------
+Total                                                                                 60 kB/s |  13 kB     00:00     
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                                                             1/1 
+  Installing       : helloworld-binding-1.1.1+20240722+30+ga9c2297-1.hello.2_f098e52f.rpbatz_1_1.x86_64          1/1 
+  Running scriptlet: helloworld-binding-1.1.1+20240722+30+ga9c2297-1.hello.2_f098e52f.rpbatz_1_1.x86_64          1/1 
+  Verifying        : helloworld-binding-1.1.1+20240722+30+ga9c2297-1.hello.2_f098e52f.rpbatz_1_1.x86_64          1/1 
+Installed products updated.
+
+Installed:
+  helloworld-binding-1.1.1+20240722+30+ga9c2297-1.hello.2_f098e52f.rpbatz_1_1.x86_64                                 
+
+Complete!
 ```
 
 This implies that your widget has been installed correctly.
 
-Check if your widget id is `agl-service-helloworld`.
+Verify if your package is properly installed :
 
 ```bash
-afm-util list --all
-[
-  {
-    "description":"Provide an AGL Helloworld Binding",
-    "name":"agl-service-helloworld",
-    "shortname":"",
-    "id":"agl-service-helloworld",
-    "version":"8.99",
-    "author":"Iot-Team <frederic.marec@iot.bzh>",
-    "author-email":"",
-    "width":"",
-    "height":"",
-    "icon":"/var/local/lib/afm/applications/agl-service-helloworld/icon.png",
-    "http-port":30001
-  }
-]
+[root@localhost ~]# rpm -ql helloworld-binding
+/usr/lib/.build-id
+/usr/lib/.build-id/12
+/usr/lib/.build-id/12/87c1ceb24a017dc7318252044c04533873f330
+/usr/redpesk
+/usr/redpesk/helloworld-binding
+/usr/redpesk/helloworld-binding/.rpconfig
+/usr/redpesk/helloworld-binding/.rpconfig/manifest.yml
+/usr/redpesk/helloworld-binding/lib
+/usr/redpesk/helloworld-binding/lib/helloworld-binding.so
 ```
 
-You can then start the service by running:
+You can then start the binding by running:
 
 ```bash
-[root@localhost ~] afm-util start agl-service-helloworld
-8628
+[root@localhost ~]# afb-binder -v -b /usr/redpesk/helloworld-binding/lib/helloworld-binding.so
+```
+The binder has started successfully.
+
+```bash
+   NOTICE: Browser URL= http://localhost:1234
+   NOTICE: Serving rootdir=. uploaddir=.
+   NOTICE: API helloworld starting...
+   NOTICE: API monitor starting...
+   NOTICE: Listening interface *:1234
+   NOTICE: [REQ/API helloworld] context initialized for new client
 ```
 
-For example, you can access to its verb **ping** which belong to its api **helloworld** thanks to a HTTP or websocket request sent to the port `$PORT` such as follow
-
-- HTTP request:
+In another terminal on the same machine (you can open one terminal with SSH and another terminal with QEMU for the same machine), you can query the verb `hello`, for example:
 
 ```bash
-curl -H "Content-Type: application/json" http://localhost:${PORT}/api/helloworld/ping | jq
+[root@localhost ~]# afb-client -H localhost:1234/api helloworld hello
 ```
-
-- Websocket request:
-
-```bash
-afb-client-demo -H ws://localhost:${PORT}/api?token=x\&uuid=magic helloworld ping
-```
-
-For both requests you should get the following answer from the first request
+and the response with success
 
 ```bash
-ON-REPLY 1:helloworld/ping: OK
+implicit null in arguments is deprecated and will be removed soon.
+ON-EVENT helloworld/verb_called:
 {
-  "response":0,
+  "jtype":"afb-event",
+  "event":"helloworld/verb_called",
+  "data":"hello"
+}
+ON-REPLY 1:helloworld/hello: OK
+{
   "jtype":"afb-reply",
   "request":{
     "status":"success",
-    "info":"Ping count = 0"
-  }
+    "code":0
+  },
+  "response":"Hello world!"
 }
 ```
 
-Once again, if you correctly set your project name and version as explained in the **Build** part, to correctly stop and remove your widget, simply run
+## Automated testing in a non-embedded environment
 
+Since this helloworld binding is not connected to real hardware, it can be run and tested on a Linux workstation.
+
+In order to run the tests you need afb-libpython. It is available in redpesk SDK.
+
+If you haven't already, please follow the quick installation guide available [here](https://docs.redpesk.bzh/docs/en/master/redpesk-os/afb-binder/afb-getting.html#add-the-sdk-repository) to ensure your platform is supported and properly set up.
+
+Install then Python bindings on your platform thanks to your distribution's tools: 
 ```bash
-dnf remove agl-service-helloworld
+sudo dnf install afb-binder afb-client afb-binding-devel afb-libpython
 ```
 
-You should have the following output
+
+### Build the project
+
+To build the `helloworld-binding` binding, follow these steps after cloning the repository onto your host machine:
+
 
 ```bash
-[root@localhost ~] dnf remove agl-service-helloworld-widget
-INFO:  kill agl-service-helloworld
-INFO:  uninstall agl-service-helloworld
+cd helloworld-binding # this repo
+
+# Create a build directory
+mkdir build
+cd build
+
+# Configure the build system
+/helloworld-binding/build$ cmake ..
+-- The C compiler identification is GNU 14.2.1
+-- The CXX compiler identification is GNU 14.2.1
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found PkgConfig: /usr/bin/pkg-config (found version "2.3.0")
+-- Checking for modules 'json-c;afb-binding>=4.1.0'
+--   Found json-c, version 0.17
+--   Found afb-binding, version 4.1.11
+-- Configuring done (0.9s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/iheb/orig/helloworld-binding/build
+
+# Build the project
+/helloworld-binding/build$ make
+[ 25%] Generating info_verb.c
+[ 50%] Building C object CMakeFiles/helloworld-binding.dir/src/helloworld.c.o
+[ 75%] Building C object CMakeFiles/helloworld-binding.dir/info_verb.c.o
+[100%] Linking C shared library helloworld-binding.so
+[100%] Built target helloworld-binding
 ```
-
-## TEST
-
-As explained before, the agl-helloworld service package contained a test sub-package.
-This package implements a set of function meant to test the agl-service-helloworld-widget functionalities.
-First of all ensure you installed the **agl-service-helloworld**. Then proceed to the test related package installation.
+You can see that the build process has successfully generated the `helloworld-binding.so` file for the binding.
 
 ```bash
-dnf install agl-service-helloworld-test
+/helloworld-binding/build$ ls
+CMakeCache.txt  CMakeFiles  cmake_install.cmake  helloworld-binding.so  info_verb.c  Makefile
 ```
+### Test binding
 
-If you correctly set your project name and version as explained in the Build part, the test widget should be installed in your target.
-Keep in mind that to launch tests, the core widget needs to be installed and **currently running** on the target.
-
-```bash
-[root@localhost ~] dnf install agl-service-helloworld-test
-INFO:  agl-service-helloworld-test installation
-```
-
-Now that the test sub-package has been installed.
-
-Check if the widget id is `agl-service-helloworld-test`.
+Now you can test either manually, as demonstrated earlier on QEMU using `afb-binder` and `afb-client`, or automatically using the script `./tests/tests.py`.
 
 ```bash
-afm-util list --all
-```
-
-In order to launch the test, you must run the following command passing the widget id.
-
-```bash
-afm-test agl-service-helloworld-test
+LD_LIBRARY_PATH=./build python  ./tests/tests.py --tap
 ```
 
 Then a prompt appears in TAP format, describing which test is currently running and whether it succeed or failed.
 
 ```bash
-[root@localhost ~] afm-test agl-service-helloworld-test
-1..6
-# Started on Wed Mar 11 09:42:52 2020
-# Starting class: testPingSuccess
-~~~~~ Begin testPingSuccess ~~~~~
-~~~~~ End testPingSuccess ~~~~~
-ok     1        testPingSuccess.testFunction
-# Starting class: testPingSuccessAndResponse
-ok     2        testPingSuccessAndResponse.testFunction
-# Starting class: testPingSuccessCallback
-ok     3        testPingSuccessCallback.testFunction
-# Starting class: testPingError
-ok     4        testPingError.testFunction
-# Starting class: testPingErrorAndResponse
-ok     5        testPingErrorAndResponse.testFunction
-# Starting class: testPingErrorCallback
-ok     6        testPingErrorCallback.testFunction
-# Ran 6 tests in 0.000 seconds, 6 successes, 0 failures
-1..5
-# Started on Wed Mar 11 09:42:52 2020
-# Starting class: TestListSuccess
-ok     1        TestListSuccess.testFunction
-# Starting class: TestSubscribeSuccess
-ok     2        TestSubscribeSuccess.testFunction
-# Starting class: TestUnsubscribeSuccess
-ok     3        TestUnsubscribeSuccess.testFunction
-# Starting class: TestWrongVerbError
-ok     4        TestWrongVerbError.testFunction
-# Starting class: TestSkippedVerb
-ok     5    # SKIP Test (mapi-helloworld, skipped_verb, table: 0x55bb25dd0680, nil) is skipped
-# Ran 4 tests in 0.001 seconds, 4 successes, 0 failures, 1 skipped
-Tests correctly launched.
+$ LD_LIBRARY_PATH=./build python  ./tests/tests.py
+Entering Python module initialization function PyInit_libafb
+     INFO: API py-binder added
+     INFO: API monitor added
+     INFO: binding [helloworld-binding.so] looks like an AFB binding V4
+     INFO: API helloworld added
+   NOTICE: Entering binder mainloop
+   NOTICE: API helloworld starting...
+     INFO: API helloworld started
+   NOTICE: API py-binder starting...
+     INFO: API py-binder started
+   NOTICE: API monitor starting...
+     INFO: API monitor started
+   NOTICE: [REQ/API helloworld] context initialized for new client
+.   NOTICE: Entering binder mainloop
+     INFO: [API py-binder] orphan event=[helloworld/verb_called] count=[0]
+     INFO: [API py-binder] orphan event=[helloworld/verb_called] count=[1]
+     INFO: [API py-binder] orphan event=[helloworld/verb_called] count=[2]
+     INFO: [API py-binder] orphan event=[helloworld/verb_called] count=[3]
+     INFO: [API py-binder] orphan event=[helloworld/verb_called] count=[4]
+     INFO: [API py-binder] orphan event=[helloworld/verb_called] count=[5]
+     INFO: [API py-binder] orphan event=[helloworld/verb_called] count=[6]
+     INFO: [API py-binder] orphan event=[helloworld/verb_called] count=[7]
+     INFO: [API py-binder] orphan event=[helloworld/verb_called] count=[8]
+     INFO: [API py-binder] orphan event=[helloworld/verb_called] count=[9]
+     INFO: [API py-binder] orphan event=[helloworld/verb_called] count=[10]
+.   NOTICE: Entering binder mainloop
+.   NOTICE: Entering binder mainloop
+.   NOTICE: Entering binder mainloop
+     INFO: [API py-binder] orphan event=[helloworld/verb_called] count=[11]
+     INFO: [API py-binder] orphan event=[helloworld/verb_called] count=[12]
+     INFO: [API py-binder] orphan event=[helloworld/verb_called] count=[13]
+     INFO: [API py-binder] orphan event=[helloworld/verb_called] count=[14]
+     INFO: [API py-binder] orphan event=[helloworld/verb_called] count=[15]
+     INFO: [API py-binder] orphan event=[helloworld/verb_called] count=[16]
+    ERROR: [API helloworld] parameter should be a JSON array of integers [/home/iheb/orig/helloworld-binding/src/helloworld.c:165,sum_verb]
+     INFO: [API py-binder] orphan event=[helloworld/verb_called] count=[17]
+    ERROR: [API helloworld] parameter should be a JSON array of integers [/home/iheb/orig/helloworld-binding/src/helloworld.c:165,sum_verb]
+     INFO: [API py-binder] orphan event=[helloworld/verb_called] count=[18]
+    ERROR: [API helloworld] parameter should be a JSON array of integers [/home/iheb/orig/helloworld-binding/src/helloworld.c:165,sum_verb]
+     INFO: [API py-binder] orphan event=[helloworld/verb_called] count=[19]
+    ERROR: [API helloworld] parameter should be a JSON array of integers [/home/iheb/orig/helloworld-binding/src/helloworld.c:165,sum_verb]
+     INFO: [API py-binder] orphan event=[helloworld/verb_called] count=[20]
+
+.
+----------------------------------------------------------------------
+Ran 5 tests in 0.012s
+
+OK
+
 ```
+
+
+
+
