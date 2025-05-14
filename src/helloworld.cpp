@@ -5,7 +5,7 @@
 #include <afb/afb-binding>
 
 /*************
-EVENT CREATION 
+EVENT CREATION
 *************/
 
 /**
@@ -16,7 +16,10 @@ static afb::event verb_called_ev;
 /* This is called at some crucial steps during the lifecycle of the
  * binding. We are only interested in the "init" stage, where we declare
  * an event which will be used later on by the binding. */
-static int mainctl(afb::api api, afb::ctlid ctlid, const afb::ctlarg ctlarg, void *userdata) noexcept
+static int mainctl(afb::api api,
+                   afb::ctlid ctlid,
+                   const afb::ctlarg ctlarg,
+                   void *userdata) noexcept
 {
     if (ctlid == afb_ctlid_Init) {
         // Return -1 if the initialized event is not valid, which will fail the initialization
@@ -41,7 +44,7 @@ static void check_subscription(afb::req req)
 {
     auto ctx(req.context<char>());
 
-    if(!ctx) {
+    if (!ctx) {
         AFB_REQ_NOTICE(req, "context initialized for new client");
         ctx.set(new char('z'));
         req.subscribe(verb_called_ev);
@@ -79,13 +82,14 @@ static void hello_verb(afb::req req, afb::received_data params)
     // Publish an event that a verb has been called
     pub_verb_called_ev(req);
 
-    // Read request parameter; if there is one and it is convertable to a string, replace "who" with its content
+    // Read request parameter; if there is one and it is convertable to a string, replace "who" with
+    // its content
     if (req.try_convert(0, afb::STRINGZ())) {
-        who_arg = (const char*)*(params[0]);
+        who_arg = (const char *)*(params[0]);
         if (strcmp("null", who_arg) != 0)
             who = who_arg;
     }
-    
+
     // Create reply string; use snprintf to avoid overflows caused by a long enough parameter
     rc = snprintf(reply_str, sizeof(reply_str), "Hello %s!", who);
     reply_str[sizeof(reply_str) - 1] = '\0';
@@ -110,8 +114,9 @@ static void sum_verb(afb::req req, afb::received_data params)
         goto err;
     // Convert the parameter to a json_object (parsing and memory management are handled by AFB)
     if (req.try_convert(0, afb::JSON_C()))
-        // try_convert replaces the old value by the converted one, so now we can use the parameter directly
-        arg = (json_object*)*(params[0]);
+        // try_convert replaces the old value by the converted one, so now we can use the parameter
+        // directly
+        arg = (json_object *)*(params[0]);
     else
         goto err;
     // Check the JSON structure of the parameter
@@ -130,7 +135,8 @@ static void sum_verb(afb::req req, afb::received_data params)
     }
 
     // Reply
-    { // Scope needed otherwise the compiler tells us that the `goto` statements bypass reply's initialization
+    {  // Scope needed otherwise the compiler tells us that the `goto` statements bypass reply's
+       // initialization
         afb::data reply(afb::I64(), &sum, sizeof(int64_t));
         req.reply(0, reply);
     }
@@ -143,7 +149,7 @@ err:
     req.reply(-1, reply);
 }
 
-extern const char* info_verb_json;
+extern const char *info_verb_json;
 
 static void info_verb(afb::req req, afb::received_data params)
 {
@@ -158,7 +164,7 @@ static void info_verb(afb::req req, afb::received_data params)
         return;
     }
 
-    afb::data reply(afb::JSON_C(), info_obj, 0, (void (*)(void*))json_object_put, info_obj);
+    afb::data reply(afb::JSON_C(), info_obj, 0, (void (*)(void *))json_object_put, info_obj);
     req.reply(0, reply);
     return;
 }
@@ -169,12 +175,9 @@ BINDING SETUP
 
 // List all the verbs we want to expose
 static const afb_verb_t verbs[] = {
-    afb::verb<info_verb>("info"),
-    afb::verb<hello_verb>("hello"),
-    afb::verb<sum_verb>("sum"),
-    afb::verbend() // This has the same meaning as the '\0' at the end of a string
+    afb::verb<info_verb>("info"), afb::verb<hello_verb>("hello"), afb::verb<sum_verb>("sum"),
+    afb::verbend()  // This has the same meaning as the '\0' at the end of a string
 };
 
 // Binding/API configuration should not be static because the binder must access it
-const afb_binding_t afbBindingExport =
-    afb::binding<mainctl>("helloworld", verbs);
+const afb_binding_t afbBindingExport = afb::binding<mainctl>("helloworld", verbs);

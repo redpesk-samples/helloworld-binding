@@ -1,14 +1,14 @@
+#include <json-c/json.h>
+#include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-#include <stdint.h>
-#include <stdbool.h>
-#include <json-c/json.h>
 
 #define AFB_BINDING_VERSION 4
 #include <afb/afb-binding.h>
 
 /*************
-EVENT CREATION 
+EVENT CREATION
 *************/
 
 /**
@@ -38,7 +38,7 @@ CONTEXT MANAGEMENT
 /**
  * Context initialization
  */
-static int context_init_cb(void *closure, void **value, void (**freecb)(void*), void **freeclo)
+static int context_init_cb(void *closure, void **value, void (**freecb)(void *), void **freeclo)
 {
     // The context is a simple boolean: false if client has not been subscribed yet, true if he is.
     // Avoid casting by using an intermediary `flag` variable.
@@ -46,7 +46,7 @@ static int context_init_cb(void *closure, void **value, void (**freecb)(void*), 
     *value = flag;
     // Context cleanup is just freeing the boolean, so we can simply pass `free` as the callback
     *freecb = free;
-    *freeclo = flag; // `freeclo` is the argument passed to `free`, here our boolean pointer
+    *freeclo = flag;  // `freeclo` is the argument passed to `free`, here our boolean pointer
 
     // Init the context to `false` since the client isn't subscribed yet
     *flag = false;
@@ -59,10 +59,10 @@ static int context_init_cb(void *closure, void **value, void (**freecb)(void*), 
  */
 static void check_subscription(afb_req_t req)
 {
-    bool* context;
+    bool *context;
 
     // Get context for the client who emitted the request, if it doesn't exist yet create it
-    if (afb_req_context(req, (void**)&context, context_init_cb, NULL) == 1)
+    if (afb_req_context(req, (void **)&context, context_init_cb, NULL) == 1)
         AFB_REQ_NOTICE(req, "context initialized for new client");
 
     // If the client isn't subscribed yet, do it
@@ -82,7 +82,8 @@ static void pub_verb_called_ev(afb_req_t req)
 
     // As an argument to the event, we use the called verb's name
     called_verb = afb_req_get_called_verb(req);
-    afb_create_data_copy(&ev_data, AFB_PREDEFINED_TYPE_STRINGZ, called_verb, strlen(called_verb) + 1);
+    afb_create_data_copy(&ev_data, AFB_PREDEFINED_TYPE_STRINGZ, called_verb,
+                         strlen(called_verb) + 1);
 
     // Before pushing the event, make sure the client is subscribed
     check_subscription(req);
@@ -128,7 +129,7 @@ static void sum_verb(afb_req_t req, unsigned nparams, afb_data_t const *params)
     size_t items;
     afb_data_t afb_arg, reply;
     struct json_object *arg, *item;
-    const char * const err_msg = "parameter should be a JSON array of integers";
+    const char *const err_msg = "parameter should be a JSON array of integers";
 
     // Publish an event that a verb has been called
     pub_verb_called_ev(req);
@@ -169,20 +170,22 @@ err:
 
 extern const char *info_verb_json;
 
-static void info_verb(afb_req_t request, unsigned nparams, afb_data_t const *params) {
-
+static void info_verb(afb_req_t request, unsigned nparams, afb_data_t const *params)
+{
     enum json_tokener_error jerr;
     afb_data_t reply;
 
     json_object *info_obj = json_tokener_parse_verbose(info_verb_json, &jerr);
     if (info_obj == NULL || jerr != json_tokener_success) {
         const char *err_msg = "error parsing info() verb description";
-        afb_create_data_raw(&reply, AFB_PREDEFINED_TYPE_STRINGZ, err_msg, strlen(err_msg) + 1, NULL, NULL);
+        afb_create_data_raw(&reply, AFB_PREDEFINED_TYPE_STRINGZ, err_msg, strlen(err_msg) + 1, NULL,
+                            NULL);
         afb_req_reply(request, AFB_ERRNO_INVALID_REQUEST, 1, &reply);
         return;
     }
 
-    afb_create_data_raw(&reply, AFB_PREDEFINED_TYPE_JSON_C, info_obj, 0, (void*)json_object_put, info_obj);
+    afb_create_data_raw(&reply, AFB_PREDEFINED_TYPE_JSON_C, info_obj, 0, (void *)json_object_put,
+                        info_obj);
     afb_req_reply(request, 0, 1, &reply);
     return;
 }
@@ -195,12 +198,8 @@ static const afb_verb_t verbs[] = {
     {.verb = "info", .callback = info_verb},
     {.verb = "hello", .callback = hello_verb},
     {.verb = "sum", .callback = sum_verb},
-    {.verb = NULL} // This has the same meaning as the '\0' at the end of a string
+    {.verb = NULL}  // This has the same meaning as the '\0' at the end of a string
 };
 
 // Binding/API configuration should not be static because the binder must access it
-const afb_binding_t afbBindingExport = {
-    .api = "helloworld",
-    .verbs = verbs,
-    .mainctl = mainctl
-};
+const afb_binding_t afbBindingExport = {.api = "helloworld", .verbs = verbs, .mainctl = mainctl};
