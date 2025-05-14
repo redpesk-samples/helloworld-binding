@@ -48,6 +48,11 @@ if(vscript)
     target_link_options(helloworld-binding PRIVATE -Wl,--version-script=${vscript})
 endif(vscript)
 
+
 # Install
 install(TARGETS helloworld-binding DESTINATION ${APP_DIR}/lib)
 install(FILES rpconfig/manifest.yml DESTINATION ${APP_DIR}/.rpconfig)
+install(PROGRAMS ${CMAKE_SOURCE_DIR}/redtest/run-redtest
+	DESTINATION /usr/libexec/redtest/${PROJECT_NAME}/)
+install(FILES ${CMAKE_SOURCE_DIR}/tests/tests.py
+    DESTINATION /usr/libexec/redtest/${PROJECT_NAME}/)

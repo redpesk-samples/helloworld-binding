@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# When this script will be run, the packages your-application.rpm and your-application-redtest.rpm
+# would have been installed on the target
+
+PACKAGE_NAME="helloworld-binding"
+
+# Install or reinstall dependencies
+for p in afb-binding-devel afb-libpython afb-test-py; do
+    sudo rpm -q $p && sudo dnf update -y $p || sudo dnf install -y $p 
+done
+
+
+# Create the directory where the logs need to be
+mkdir -p /var/log/redtest/${PACKAGE_NAME}
+
+# Run your tests
+# To be filled by you! Remember, the log file needs to be in ".tap" format
+
+echo "--- Start test python hello world binding ---"
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+LD_LIBRARY_PATH=/usr/redpesk/helloworld-binding/lib python ${SCRIPT_DIR}/tests.py --tap | tee /var/log/redtest/${PACKAGE_NAME}/tests.tap 2>&1

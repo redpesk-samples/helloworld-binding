@@ -16,6 +16,13 @@ BuildRequires: pkgconfig(afb-binding)
 %description
 Provides a simple API showcasing the basics of binding development
 
+
+%package redtest
+Summary: redtest package
+Requires: %{name} = %{version}-%{release}
+%description redtest
+
+
 %prep
 %autosetup -p 1
 
@@ -30,5 +37,9 @@ Provides a simple API showcasing the basics of binding development
 %defattr(-,root,root)
 %dir %{_afmappdir}/%{name}
 %{_afmappdir}
+
+%files redtest
+%{_libexecdir}/redtest/%{name}/run-redtest
+%{_libexecdir}/redtest/%{name}/tests.py
 
 %changelog
