@@ -21,6 +21,7 @@ test:
   artifacts:
     paths:
       - html/
+      - coverage.xml
     expose_as: 'Coverage report'
     reports:
       coverage_report:
