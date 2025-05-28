@@ -1,6 +1,13 @@
+# Specify that this pipeline is on merge request only
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+
 stages:
   - lint
-  - test
+  - test-py
+  - build-factory
+  - redtest-factory
 
 default:
   tags:
@@ -13,8 +20,8 @@ lint:
     - bash -x tests/ci/lint.sh
   allow_failure: true
 
-test:
-  stage: test
+test-py:
+  stage: test-py
   needs: []
   script:
     - bash -x tests/ci/test_and_coverage.sh
@@ -27,5 +34,18 @@ test:
       coverage_report:
         coverage_format: cobertura
         path: coverage.xml
-  # extract coverage from lcov --list output
   coverage: '/Total:\|(\d+\.?\d+\%)/'
+
+build-factory:
+  stage: build-factory
+  needs: []
+  script:
+    - bash -x tests/build_fact.sh "$RP_REMOTE_FACTORY_NAME" "$RP_REMOTE_FACTORY_TOKEN" "$RP_REMOTE_FACTORY_URL" "$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
+
+redtest-factory:
+  stage: redtest-factory
+  needs:
+    - job: build-factory
+  script:
+    - bash -x tests/redtest_fact.sh
+  allow_failure: false
