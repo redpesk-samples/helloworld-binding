@@ -1,4 +1,7 @@
-# helloworld-binding
+[![Pipeline Status](https://git.ovh.iot/redpesk/redpesk-samples/helloworld-binding/badges/master/pipeline.svg)](https://git.ovh.iot/redpesk/redpesk-samples/helloworld-binding/-/pipelines)
+
+
+# helloworld binding
 
 A binding example, implemented in a redpesk context
 ![rp_image](https://avatars2.githubusercontent.com/u/58298458?s=400&v=4?raw=true)
