@@ -40,12 +40,12 @@ build-factory:
   stage: build-factory
   needs: []
   script:
-    - bash -x tests/build_fact.sh "$RP_REMOTE_FACTORY_NAME" "$RP_REMOTE_FACTORY_TOKEN" "$RP_REMOTE_FACTORY_URL" "$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
+    - bash -x tests/build_fact.sh "$RP_REMOTE_FACTORY_NAME" "$RP_REMOTE_FACTORY_TOKEN" "$RP_REMOTE_FACTORY_URL" "$RP_REMOTE_FACTORY_PROJECT" "$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
 
 redtest-factory:
   stage: redtest-factory
   needs:
     - job: build-factory
   script:
-    - bash -x tests/redtest_fact.sh
+    - bash -x tests/redtest_fact.sh "$RP_REMOTE_FACTORY_PROJECT"
   allow_failure: false
