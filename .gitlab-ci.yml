@@ -3,11 +3,14 @@ workflow:
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
 
+include:
+   - 'https://git.ovh.iot/redpesk/redpesk-devtools/gitlab-ci-factory-templates/-/raw/master/.rp-cli-template-ci.yml'
+
 stages:
   - lint
   - test-py
-  - build-factory
-  - redtest-factory
+  - build_factory
+  - redtest_factory
 
 default:
   tags:
@@ -15,14 +18,12 @@ default:
 
 lint:
   stage: lint
-  needs: []
   script:
     - bash -x tests/ci/lint.sh
   allow_failure: true
 
 test-py:
   stage: test-py
-  needs: []
   script:
     - bash -x tests/ci/test_and_coverage.sh
   artifacts:
@@ -36,16 +37,13 @@ test-py:
         path: coverage.xml
   coverage: '/Total:\|(\d+\.?\d+\%)/'
 
-build-factory:
-  stage: build-factory
-  needs: []
-  script:
-    - bash -x tests/build_fact.sh "$RP_REMOTE_FACTORY_NAME" "$RP_REMOTE_FACTORY_TOKEN" "$RP_REMOTE_FACTORY_URL" "$RP_REMOTE_FACTORY_PROJECT" "$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
+build_factory:
+  stage: build_factory
+  extends: .rp-cli-build
 
-redtest-factory:
-  stage: redtest-factory
+redtest_factory:
+  stage: redtest_factory
   needs:
-    - job: build-factory
-  script:
-    - bash -x tests/redtest_fact.sh "$RP_REMOTE_FACTORY_PROJECT"
-  allow_failure: false
+    - build_factory
+  extends: .rp-cli-test
+  
