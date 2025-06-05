@@ -4,7 +4,7 @@ workflow:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
 
 include:
-   - 'https://git.ovh.iot/redpesk/redpesk-devtools/gitlab-ci-factory-templates/-/raw/master/.rp-cli-template-ci.yml'
+   - 'https://raw.githubusercontent.com/redpesk-devtools/gitlab-ci-factory-templates/refs/heads/master/.rp-cli-template-ci.yml'
 
 stages:
   - lint
