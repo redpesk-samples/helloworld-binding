@@ -3,7 +3,7 @@ Version: 2.0.0
 Release: 1%{?dist}
 License: APL2.0
 Summary: helloworld service set to be used in redpesk
-URL:     https://git.ovh.iot/redpesk/redpesk-samples/helloworld-binding
+URL:     https://github.com/redpesk-samples/helloworld-binding
 Source:  %{name}-%{version}.tar.gz
 
 %global _afmappdir %{_prefix}/redpesk
