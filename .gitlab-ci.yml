@@ -1,6 +1,10 @@
-# This file is part of the RedPesK project.
+# This file is part of the redpesk project.
 include:
-   - 'https://raw.githubusercontent.com/redpesk-devtools/gitlab-ci-factory-templates/refs/heads/master/.rp-cli-template-ci.yml'
+  - 'https://git.ovh.iot/redpesk/redpesk-devtools/gitlab-ci-factory-templates/-/raw/@seb/fix/rp-cli-template-ci.yml'
+  #  - 'https://raw.githubusercontent.com/redpesk-devtools/gitlab-ci-factory-templates/refs/heads/master/rp-cli-template-ci.yml'
+
+# variables:
+  # RP_VERBOSE: "true"  # just uncomment this line to enable debugging mode
 
 stages:
   - lint
@@ -20,7 +24,6 @@ lint:
 build_factory:
   stage: build_factory
   extends:
-    - .rp-cli-install 
     - .rp-cli-build
 
 redtest_factory:
@@ -28,5 +31,4 @@ redtest_factory:
   needs:
     - build_factory
   extends:
-    - .rp-cli-install
     - .rp-cli-start-test
