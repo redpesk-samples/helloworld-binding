@@ -3,7 +3,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
 project(helloworld-binding
     VERSION 2.0.0
     DESCRIPTION "Provides a simple API showcasing the basics of binding development"
-    HOMEPAGE_URL "https://git.ovh.iot/redpesk/redpesk-samples/helloworld-binding"
+    HOMEPAGE_URL "https://github.com/redpesk-samples/helloworld-binding"
     LANGUAGES C CXX
 )
 

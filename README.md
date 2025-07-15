@@ -1,6 +1,3 @@
-[![Pipeline Status](https://git.ovh.iot/redpesk/redpesk-samples/helloworld-binding/badges/master/pipeline.svg)](https://git.ovh.iot/redpesk/redpesk-samples/helloworld-binding/-/pipelines)
-
-
 # helloworld binding
 
 A binding example, implemented in a redpesk context
@@ -11,11 +8,8 @@ A binding example, implemented in a redpesk context
 To follow this tutorial without inconvenience, you have to get the following tools ready to use:
 
 - wget
-
 - xz
-
 - ssh
-
 - qemu (more details at a later stage)
 
 Moreover, in order to use redpesk services, you must register [here](https://community-app.redpesk.bzh/signup) ! You can either use a GitHub or a GitLab account.
@@ -53,7 +47,7 @@ $ tar xJf redpesk*.tar.xz
 
 ### Running a redpesk image
 
-Here we are, you are about to run the redpesk image. 
+Here we are, you are about to run the redpesk image.
 
 ```bash
 $ ls
@@ -111,13 +105,13 @@ Unable to read consumer identity
 
 This system is not registered with an entitlement server. You can use subscription-manager to register.
 
-hello-2_f098e52f--redpesk-lts-batz-2.1-update-build                                  4.8 kB/s | 2.1 kB     00:00    
-redpesk-lts-batz-2.1-update-build                                                    2.0 MB/s | 6.3 MB     00:03    
-redpesk-lts-batz-2.1-update-middleware-build                                         608 kB/s | 324 kB     00:00    
-redpesk-config-build                                                                 3.5 kB/s | 1.6 kB     00:00    
-RedPesk Middleware batz-2.1 Update - x86_64                                          658 kB/s | 323 kB     00:00    
-RedPesk Baseos batz-2.1 Update - x86_64                                              9.0 MB/s | 7.9 MB     00:00    
-RedPesk Config                                                                       2.8 kB/s | 903  B     00:00    
+hello-2_f098e52f--redpesk-lts-batz-2.1-update-build                                  4.8 kB/s | 2.1 kB     00:00
+redpesk-lts-batz-2.1-update-build                                                    2.0 MB/s | 6.3 MB     00:03
+redpesk-lts-batz-2.1-update-middleware-build                                         608 kB/s | 324 kB     00:00
+redpesk-config-build                                                                 3.5 kB/s | 1.6 kB     00:00
+RedPesk Middleware batz-2.1 Update - x86_64                                          658 kB/s | 323 kB     00:00
+RedPesk Baseos batz-2.1 Update - x86_64                                              9.0 MB/s | 7.9 MB     00:00
+RedPesk Config                                                                       2.8 kB/s | 903  B     00:00
 Dependencies resolved.
 =====================================================================================================================
  Package            Arch   Version                         Repository                                           Size
@@ -134,22 +128,22 @@ Total download size: 13 k
 Installed size: 16 k
 Is this ok [y/N]: y
 Downloading Packages:
-helloworld-binding-1.1.1+20240722+30+ga9c2297-1.hello.2_f098e52f.rpbatz_1_1.x86_64.r  64 kB/s |  13 kB     00:00    
+helloworld-binding-1.1.1+20240722+30+ga9c2297-1.hello.2_f098e52f.rpbatz_1_1.x86_64.r  64 kB/s |  13 kB     00:00
 ---------------------------------------------------------------------------------------------------------------------
-Total                                                                                 60 kB/s |  13 kB     00:00     
+Total                                                                                 60 kB/s |  13 kB     00:00
 Running transaction check
 Transaction check succeeded.
 Running transaction test
 Transaction test succeeded.
 Running transaction
-  Preparing        :                                                                                             1/1 
-  Installing       : helloworld-binding-1.1.1+20240722+30+ga9c2297-1.hello.2_f098e52f.rpbatz_1_1.x86_64          1/1 
-  Running scriptlet: helloworld-binding-1.1.1+20240722+30+ga9c2297-1.hello.2_f098e52f.rpbatz_1_1.x86_64          1/1 
-  Verifying        : helloworld-binding-1.1.1+20240722+30+ga9c2297-1.hello.2_f098e52f.rpbatz_1_1.x86_64          1/1 
+  Preparing        :                                                                                             1/1
+  Installing       : helloworld-binding-1.1.1+20240722+30+ga9c2297-1.hello.2_f098e52f.rpbatz_1_1.x86_64          1/1
+  Running scriptlet: helloworld-binding-1.1.1+20240722+30+ga9c2297-1.hello.2_f098e52f.rpbatz_1_1.x86_64          1/1
+  Verifying        : helloworld-binding-1.1.1+20240722+30+ga9c2297-1.hello.2_f098e52f.rpbatz_1_1.x86_64          1/1
 Installed products updated.
 
 Installed:
-  helloworld-binding-1.1.1+20240722+30+ga9c2297-1.hello.2_f098e52f.rpbatz_1_1.x86_64                                 
+  helloworld-binding-1.1.1+20240722+30+ga9c2297-1.hello.2_f098e52f.rpbatz_1_1.x86_64
 
 Complete!
 ```
@@ -221,7 +215,7 @@ In order to run the tests you need afb-libpython. It is available in redpesk SDK
 
 If you haven't already, please follow the quick installation guide available [here](https://docs.redpesk.bzh/docs/en/master/redpesk-os/afb-binder/afb-getting.html#add-the-sdk-repository) to ensure your platform is supported and properly set up.
 
-Install then Python bindings on your platform thanks to your distribution's tools: 
+Install then Python bindings on your platform thanks to your distribution's tools:
 ```bash
 sudo dnf install afb-binder afb-client afb-binding-devel afb-libpython
 ```

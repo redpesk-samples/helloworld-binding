@@ -9,7 +9,7 @@ stages:
 
 default:
   tags:
-    - redpesk-batz
+    - redpesk-binding-ci
 
 lint:
   stage: lint
