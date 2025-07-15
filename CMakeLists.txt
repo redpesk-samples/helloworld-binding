@@ -37,10 +37,16 @@ else()
     set(SRC ./src/helloworld.c)
 endif(CPP)
 
+# Specify the directory for .gcno and .gcda
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --coverage -fprofile-dir=/usr/libexec/redtest/${PROJECT_NAME}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage -fprofile-dir=/usr/libexec/redtest/${PROJECT_NAME}")
+
+
 add_library(helloworld-binding SHARED ${SRC} ${infoc})
 target_compile_options(helloworld-binding PRIVATE ${deps_CFLAGS})
 target_link_libraries(helloworld-binding ${deps_LDFLAGS})
 set_target_properties(helloworld-binding PROPERTIES PREFIX "")
+
 
 # This version script is a linker script which exports all symbols named "afbBinding*" and makes all the other symbols local only
 pkg_get_variable(vscript afb-binding version_script)

@@ -1,14 +1,9 @@
-# Specify that this pipeline is on merge request only
-workflow:
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
-
+# This file is part of the RedPesK project.
 include:
    - 'https://raw.githubusercontent.com/redpesk-devtools/gitlab-ci-factory-templates/refs/heads/master/.rp-cli-template-ci.yml'
 
 stages:
   - lint
-  - test-py
   - build_factory
   - redtest_factory
 
@@ -22,28 +17,16 @@ lint:
     - bash -x tests/ci/lint.sh
   allow_failure: true
 
-test-py:
-  stage: test-py
-  script:
-    - bash -x tests/ci/test_and_coverage.sh
-  artifacts:
-    paths:
-      - html/
-      - coverage.xml
-    expose_as: 'Coverage report'
-    reports:
-      coverage_report:
-        coverage_format: cobertura
-        path: coverage.xml
-  coverage: '/Total:\|(\d+\.?\d+\%)/'
-
 build_factory:
   stage: build_factory
-  extends: .rp-cli-build
+  extends:
+    - .rp-cli-install 
+    - .rp-cli-build
 
 redtest_factory:
   stage: redtest_factory
   needs:
     - build_factory
-  extends: .rp-cli-test
-  
+  extends:
+    - .rp-cli-install
+    - .rp-cli-start-test
