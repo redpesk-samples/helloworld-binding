@@ -1,7 +1,6 @@
 # This file is part of the redpesk project.
 include:
-  - 'https://git.ovh.iot/redpesk/redpesk-devtools/gitlab-ci-factory-templates/-/raw/@seb/fix/rp-cli-template-ci.yml'
-  #  - 'https://raw.githubusercontent.com/redpesk-devtools/gitlab-ci-factory-templates/refs/heads/master/rp-cli-template-ci.yml'
+  - 'https://raw.githubusercontent.com/redpesk-devtools/gitlab-ci-factory-templates/refs/heads/master/rp-cli-template-ci.yml'
 
 # variables:
   # RP_VERBOSE: "true"  # just uncomment this line to enable debugging mode

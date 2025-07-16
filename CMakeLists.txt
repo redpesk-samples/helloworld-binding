@@ -38,8 +38,8 @@ else()
 endif(CPP)
 
 # Specify the directory for .gcno and .gcda
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --coverage -fprofile-dir=/usr/libexec/redtest/${PROJECT_NAME}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage -fprofile-dir=/usr/libexec/redtest/${PROJECT_NAME}")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fprofile-dir=/usr/libexec/redtest/${PROJECT_NAME}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-dir=/usr/libexec/redtest/${PROJECT_NAME}")
 
 
 add_library(helloworld-binding SHARED ${SRC} ${infoc})
