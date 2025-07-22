@@ -18,12 +18,8 @@ mkdir -p ${LOG_DIR}
 echo "--- Start test python hello world binding ---"
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 export GCOV_PREFIX=${SCRIPT_DIR}/coverage_data/
+export GCOV_PREFIX_STRIP=5
 LD_LIBRARY_PATH=${SCRIPT_DIR}/coverage_data/${PACKAGE_NAME}/lib/ python ${SCRIPT_DIR}/tests.py --tap | tee /var/log/redtest/${PACKAGE_NAME}/tests.tap 2>&1
-
-# the following command will rename the gcda files to a more readable format for lcov
-for f in $(find ${SCRIPT_DIR}/coverage_data -name "*.gcda"); do
-    mv $f ${SCRIPT_DIR}/coverage_data/$(echo $f | cut -d'#' -f7- | tr '#' '/')
-done
 
 
 ##########################

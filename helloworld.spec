@@ -55,8 +55,6 @@ cd ..
 
 # Install coverage build (for redtest package)
 cd build-coverage
-# Clean any existing .so or .gcno
-rm -rf %{buildroot}%{coverage_dir}
 %cmake_install
 
 # Copy the coverage files (.gcno) into the coverage_data directory for redtest
