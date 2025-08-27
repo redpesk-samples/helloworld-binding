@@ -19,7 +19,7 @@ echo "--- Start test python hello world binding ---"
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 export GCOV_PREFIX=${SCRIPT_DIR}/coverage_data/
 export GCOV_PREFIX_STRIP=5
-LD_LIBRARY_PATH=${SCRIPT_DIR}/coverage_data/${PACKAGE_NAME}/lib/ python ${SCRIPT_DIR}/tests.py --tap | tee /var/log/redtest/${PACKAGE_NAME}/tests.tap 2>&1
+LD_LIBRARY_PATH=${SCRIPT_DIR}/coverage_data/${PACKAGE_NAME}/lib/ python3 ${SCRIPT_DIR}/tests.py --tap | tee /var/log/redtest/${PACKAGE_NAME}/tests.tap 2>&1
 
 
 ##########################
@@ -47,7 +47,7 @@ lcov --remove app.info '/usr/*' -o app_filtered.info
 lcov --list app_filtered.info
 
 # Generate Cobertura-compatible XML for GitLab coverage
-PYTHONPATH=./lcov_cobertura-2.1.1/ python -m lcov_cobertura app_filtered.info -o ${LOG_DIR}/coverage.xml
+PYTHONPATH=./lcov_cobertura-2.1.1/ python3 -m lcov_cobertura app_filtered.info -o ${LOG_DIR}/coverage.xml
 
 
 echo "--- Coverage report generated at ${LOG_DIR}/ ---"

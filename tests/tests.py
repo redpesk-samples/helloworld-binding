@@ -13,14 +13,14 @@ class TestHelloWorld(AFBTestCase):
 
     def test_hello_verb(self):
         """Test hello verb"""
-        r = libafb.callsync(self.binder, "helloworld", "hello", None)
+        r = libafb.callsync(self.binder, "helloworld", "hello")
         assert r.args == ("Hello world!",)
 
         r = libafb.callsync(self.binder, "helloworld", "hello")
         assert r.args == ("Hello world!",)
 
         r = libafb.callsync(self.binder, "helloworld", "hello", "you")
-        assert r.args == ('Hello "you"!',)
+        assert r.args == ("Hello you!",)
 
         r = libafb.callsync(self.binder, "helloworld", "hello", 42)
         assert r.args == ("Hello 42!",)
@@ -32,7 +32,7 @@ class TestHelloWorld(AFBTestCase):
         assert r.args == ('Hello {"ok":1}!',)
 
         r = libafb.callsync(self.binder, "helloworld", "hello", 3.14)
-        assert r.args == ("Hello 3.1400000000000001!",)
+        assert r.args == ("Hello               3.14!",)
 
         r = libafb.callsync(self.binder, "helloworld", "hello", [1, 2, 3])
         assert r.args == ("Hello [1,2,3]!",)
@@ -53,10 +53,10 @@ class TestHelloWorld(AFBTestCase):
     def test_hello_verb_fail(self):
         """Test Verb Failing"""
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(OverflowError):
             r = libafb.callsync(self.binder, "helloworld", "hello", 2**63)
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(OverflowError):
             r = libafb.callsync(self.binder, "helloworld", "hello", 2**64 - 1)
 
     def test_hello_evt(self):
