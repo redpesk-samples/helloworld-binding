@@ -22,6 +22,8 @@ Provides a simple API showcasing the basics of binding development
 %package redtest
 Summary: redtest package (coverage build)
 Requires: lcov
+Requires: afb-test-py
+Requires: afb-libpython
 %description redtest
 This package contains binaries built with coverage instrumentation.
 
