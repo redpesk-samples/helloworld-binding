@@ -44,5 +44,10 @@ lcov --list app_filtered.info
 # Generate Cobertura-compatible XML for GitLab coverage
 PYTHONPATH=./lcov_cobertura-2.1.1/ python3 -m lcov_cobertura app_filtered.info -o ${LOG_DIR}/coverage.xml
 
-
 echo "--- Coverage report generated at ${LOG_DIR}/ ---"
+
+##########################
+# report status
+##########################
+test -f /var/log/redtest/${PACKAGE_NAME}/helloworld.tap && grep -viq '^not ok' /var/log/redtest/${PACKAGE_NAME}/helloworld.tap
+
