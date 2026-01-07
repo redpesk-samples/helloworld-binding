@@ -12,16 +12,15 @@ To follow this tutorial without inconvenience, you have to get the following too
 - ssh
 - qemu (more details at a later stage)
 
-Moreover, in order to use redpesk services, you must register [here](https://community-app.redpesk.bzh/signup) ! You can either use a GitHub or a GitLab account.
+Moreover, in order to use redpesk services, you must register on the [redpesk Community signup page](https://community-app.redpesk.bzh/signup) ! You can either use a GitHub or a GitLab account.
 
 ## Project configuration
 
 Refer to the [documentation](https://docs.redpesk.bzh/) for detailed guidance on creating and configuring your redpesk project and application setup.
 
-#### ⚠️ Key consideration
+### ⚠️ Key consideration
 
 Ensure that the application name specified in your spec file matches the name used during the application's creation.
-
 
 ## Deploy on a board
 
@@ -33,16 +32,16 @@ Refer to the [documentation](https://docs.redpesk.bzh/docs/en/master/redpesk-os/
 
 Download the latest redpesk image according to your board architecture.
 
-For more details, please refer to the documentation [here](https://docs.redpesk.bzh/docs/en/master/redpesk-os/boards/docs/boards/up-board.html).
+For more details, please refer to the [UP Board documentation](https://docs.redpesk.bzh/docs/en/master/redpesk-os/boards/docs/boards/up-board.html).
 
 ```bash
-$ mkdir ~/redpeskimage
+mkdir ~/redpeskimage
 
-$ cd ~/redpeskimage
+cd ~/redpeskimage
 
-$ wget -r -nd -nc --no-parent --accept-regex='redpesk.*smack.*\.(bmap|xz|sha256)' --reject-regex '(image\.raw|ova|index)' 'https://download.redpesk.bzh/redpesk-lts/batz-2.1-update/images/smack/minimal/x86_64/generic/'
+wget -r -nd -nc --no-parent --accept-regex='redpesk.*smack.*\.(bmap|xz|sha256)' --reject-regex '(image\.raw|ova|index)' 'https://download.redpesk.bzh/redpesk-lts/batz-2.1-update/images/smack/minimal/x86_64/generic/'
 
-$ tar xJf redpesk*.tar.xz
+tar xJf redpesk*.tar.xz
 ```
 
 ### Running a redpesk image
@@ -93,8 +92,7 @@ ssh root@localhost -p ${TCP_PORT}
 
 ### Installing your package
 
-After building your package, refer to the documentation [here](https://docs.redpesk.bzh/docs/en/master/getting_started/docs/deployment.html), specifically section 4: "Install your package," to proceed with the installation.
-
+After building your package, refer to the [deployment documentation](https://docs.redpesk.bzh/docs/en/master/getting_started/docs/deployment.html), specifically section 4: "Install your package," to proceed with the installation.
 
 If you correctly set your project name and version as explained in the **Build** part, you should have the following output during the package installation
 
@@ -170,6 +168,7 @@ You can then start the binding by running:
 ```bash
 [root@localhost ~]# afb-binder -v -b /usr/redpesk/helloworld-binding/lib/helloworld-binding.so
 ```
+
 The binder has started successfully.
 
 ```bash
@@ -186,6 +185,7 @@ In another terminal on the same machine (you can open one terminal with SSH and 
 ```bash
 [root@localhost ~]# afb-client -H localhost:1234/api helloworld hello
 ```
+
 and the response with success
 
 ```bash
@@ -213,18 +213,17 @@ Since this helloworld binding is not connected to real hardware, it can be run a
 
 In order to run the tests you need afb-libpython. It is available in redpesk SDK.
 
-If you haven't already, please follow the quick installation guide available [here](https://docs.redpesk.bzh/docs/en/master/redpesk-os/afb-binder/afb-getting.html#add-the-sdk-repository) to ensure your platform is supported and properly set up.
+If you haven't already, please follow the [quick installation guide](https://docs.redpesk.bzh/docs/en/master/redpesk-os/afb-binder/afb-getting.html#add-the-sdk-repository) to ensure your platform is supported and properly set up.
 
 Install then Python bindings on your platform thanks to your distribution's tools:
+
 ```bash
 sudo dnf install afb-binder afb-client afb-binding-devel afb-libpython
 ```
 
-
 ### Build the project
 
 To build the `helloworld-binding` binding, follow these steps after cloning the repository onto your host machine:
-
 
 ```bash
 cd helloworld-binding # this repo
@@ -263,12 +262,14 @@ cd build
 [100%] Linking C shared library helloworld-binding.so
 [100%] Built target helloworld-binding
 ```
+
 You can see that the build process has successfully generated the `helloworld-binding.so` file for the binding.
 
 ```bash
 /helloworld-binding/build$ ls
 CMakeCache.txt  CMakeFiles  cmake_install.cmake  helloworld-binding.so  info_verb.c  Makefile
 ```
+
 ### Test binding
 
 Now you can test either manually, as demonstrated earlier on QEMU using `afb-binder` and `afb-client`, or automatically using the script `./tests/tests.py`.
@@ -331,7 +332,3 @@ Ran 5 tests in 0.012s
 OK
 
 ```
-
-
-
-
