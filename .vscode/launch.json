@@ -1,0 +1,17 @@
+{
+    "configurations": [
+
+        {
+            "type": "cppdbg",
+            "request": "launch",
+            "name": "GDB helloworld-binding.so",
+            "cwd": "${workspaceFolder}",
+            "program": "/usr/bin/afb-binder",
+            "args": [
+                "-vvv",
+                "-b",
+                "${workspaceFolder}/*/helloworld-binding.so"
+            ]
+         }
+    ]
+}
