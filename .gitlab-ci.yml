@@ -2,13 +2,14 @@
 include:
   - 'https://raw.githubusercontent.com/redpesk-devtools/gitlab-ci-factory-templates/refs/heads/master/rp-cli-template-ci.yml'
 
-# variables:
-  # RP_VERBOSE: "true"  # just uncomment this line to enable debugging mode
+variables:
+  RP_VERBOSE: "true"  # just uncomment/comment this line to enable/disable verbose mode
+  #RP_DEBUG: "true"  # just uncomment/comment this line to enable/disable debugging mode
 
 stages:
   - lint
-  - build_factory
-  - redtest_factory
+  - build
+  - redtest
 
 default:
   tags:
@@ -20,14 +21,14 @@ lint:
     - bash -x tests/ci/lint.sh
   allow_failure: true
 
-build_factory:
-  stage: build_factory
+build:
+  stage: build
   extends:
     - .rp-cli-build
 
-redtest_factory:
-  stage: redtest_factory
+redtest:
+  stage: redtest
   needs:
-    - build_factory
+    - build
   extends:
     - .rp-cli-start-test
