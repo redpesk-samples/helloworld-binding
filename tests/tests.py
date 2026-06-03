@@ -85,13 +85,13 @@ class TestHelloWorld(AFBTestCase):
         with self.assertRaises(ValueError):
             libafb.callsync(self.binder, "helloworld", "sum", [2**63])
 
-        # check no argument raises an error
-        with self.assertRaises(RuntimeError):
-            libafb.callsync(self.binder, "helloworld", "sum")
+        # check no argument returns an error
+        r = libafb.callsync(self.binder, "helloworld", "sum")
+        assert r.status < 0
 
-        # check argument of the wrong type raises
-        with self.assertRaises(RuntimeError):
-            libafb.callsync(self.binder, "helloworld", "sum", 42)
+        # check argument of the wrong type returns an error
+        r = libafb.callsync(self.binder, "helloworld", "sum", 42)
+        assert r.status < 0
 
     def test_sum_evt(self):
         """Test sum event"""
