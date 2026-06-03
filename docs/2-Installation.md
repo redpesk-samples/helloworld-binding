@@ -1,39 +1,22 @@
-# Installation 
+# Installation
 
-## Prerequisites
+## From package
 
-This part is only useful if you plan to install the package from source.
+You can run the same command on a target runing a redpesk OS or in the [SDK container]({% chapter_link sdk-container-doc.overview %}) (development mode).
 
-We advise you to use the [local builder]({% chapter_link local-builder-doc.installation %}) for from source installation. The local builder comes with everything setup to build redpesk@ projects.
-
-Else install the building tools
-
-* gcc
-* g++
-* make
-* cmake
-* afb-cmake-modules
-
-Then the following dependencies:
-
-* json-c
-* libsystemd
-* afb-daemon
-* libafb
-* libmicrohttpd
-* afb-libhelpers
-
-Fedora/OpenSuse:
 ```bash
-dnf install gcc-c++ make cmake afb-cmake-modules json-c-devel afb-binding-devel libmicrohttpd-devel afb-libhelpers-devel pkg-config
+dnf install helloworld-binding
 ```
 
-Ubuntu:
+## From sources
+
+When developing inside the SDK container, to install the build dependencies, run the following command:
+
 ```bash
-apt install gcc g++ make cmake afb-cmake-modules libsystemd-dev libjson-c-dev afb-binding-dev libmicrohttpd-dev afb-libhelpers-dev pkg-config
+dnf builddep helloworld-binding
 ```
 
-## Build
+Then clone and build from sources.
 
 ```bash
 git clone https://github.com/redpesk-samples/helloworld-binding.git
@@ -44,3 +27,5 @@ cd build
 cmake -DVERSION=8.99.6 ..
 make 
 ```
+
+> Note: To rebuild all (including application framework) from sources, please refer to this [chapter]({% chapter_link host-build-doc.build-framework-on-your-computer %}).
