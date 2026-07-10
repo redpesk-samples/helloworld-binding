@@ -24,6 +24,8 @@ Summary: redtest package (coverage build)
 Requires: lcov
 Requires: afb-test-py
 Requires: afb-libpython
+# Download cobertura in run-redtest
+Requires: wget tar
 %description redtest
 This package contains binaries built with coverage instrumentation.
 
