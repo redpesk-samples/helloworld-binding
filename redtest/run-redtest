@@ -11,11 +11,10 @@ mkdir -p ${LOG_DIR}
 
 # Run your tests (generate .tap file for redpesk)
 echo "--- Start test python hello world binding ---"
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 export GCOV_PREFIX=${SCRIPT_DIR}/coverage_data/
 export GCOV_PREFIX_STRIP=5
-LD_LIBRARY_PATH=${SCRIPT_DIR}/coverage_data/${PACKAGE_NAME}/lib/ python3 ${SCRIPT_DIR}/tests.py --tap | tee /var/log/redtest/${PACKAGE_NAME}/helloworld.tap 2>&1
-
+LD_LIBRARY_PATH=${SCRIPT_DIR}/coverage_data/${PACKAGE_NAME}/lib/ python3 "${SCRIPT_DIR}/tests.py" --tap | tee /var/log/redtest/${PACKAGE_NAME}/helloworld.tap 2>&1
 
 ##########################
 # Coverage report section
@@ -33,7 +32,7 @@ tar xzvf lcov_cobertura-2.1.1.tar.gz
 
 # Generate lcov info file
 rm -f app.info app_filtered.info
-lcov --directory ${SCRIPT_DIR}/coverage_data/ --capture --output-file app.info
+lcov --directory "${SCRIPT_DIR}/coverage_data/" --capture --output-file app.info
 
 # Remove system headers and other noise
 lcov --remove app.info '/usr/*' -o app_filtered.info
@@ -50,4 +49,3 @@ echo "--- Coverage report generated at ${LOG_DIR}/ ---"
 # report status
 ##########################
 test -f /var/log/redtest/${PACKAGE_NAME}/helloworld.tap && grep -viq '^not ok' /var/log/redtest/${PACKAGE_NAME}/helloworld.tap
-

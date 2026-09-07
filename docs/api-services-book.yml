@@ -4,12 +4,16 @@ books:
 -
     id: helloworld-binding-doc
     title: Helloworld binding
-    description: 
+    description: AFB Binding V4 sample showcasing the basics of binding development in redpesk
     keywords:
     chapters:
-    - url: 1-Architecture.md
-      name: Architecture presentation
-    - url: 2-Installation.md
-      name: Installation Guide
-    - url: 3-Usage.md
-      name: Usage Guide
+    - url: 1-Overview.md
+      name: Overview
+    - url: 2-Build-and-Installation.md
+      name: Build and Installation
+    - url: 3-Configuration-and-Usage.md
+      name: Configuration and Usage
+    - url: 4-API-Reference.md
+      name: API Reference
+    - url: 5-Validation-and-Testing.md
+      name: Validation and Testing
