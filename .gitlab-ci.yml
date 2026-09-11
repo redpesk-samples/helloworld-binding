@@ -32,3 +32,28 @@ redtest:
     - build
   extends:
     - .rp-cli-start-test
+  # Override the shared template script because rp-cli currently downloads
+  # console.log directly into redtest-logs/, not two directories below it.
+  script:
+    - '[ -n "$RP_DEBUG" ] && { set -x; rpcli connections current; }'
+    - |
+      TEST_TMO=${RP_TEST_TIMEOUT:-${RP_TEST_DEFAULT_TIMEOUT}}
+      if [ -n "$RP_VERBOSE" ]; then
+        echo "Variables status:"
+        echo "RP_REMOTE_FACTORY_NAME:     ${RP_REMOTE_FACTORY_NAME}"
+        echo "RP_REMOTE_FACTORY_URL:      ${RP_REMOTE_FACTORY_URL}"
+        echo "RP_REMOTE_FACTORY_PROJECT:  ${RP_REMOTE_FACTORY_PROJECT}"
+        echo "RP_REMOTE_FACTORY_APP:      ${RP_REMOTE_FACTORY_APP}"
+        echo "RP_TEST_TIMEOUT:            ${TEST_TMO}"
+      fi
+    - |
+      if [ -n "$RP_REMOTE_FACTORY_APP" ]; then
+        APP_NAME="$RP_REMOTE_FACTORY_APP"
+      else
+        APP_NAME="$CI_PROJECT_NAME"
+      fi
+      echo "Using application name: $APP_NAME"
+    - rp-cli applications test "$APP_NAME" --project "${RP_REMOTE_FACTORY_PROJECT}" --time-out ${TEST_TMO}
+    - mkdir -p redtest-logs
+    - rp-cli applications tests logs "$APP_NAME" --project "${RP_REMOTE_FACTORY_PROJECT}" --force-app --directory redtest-logs
+    - cat redtest-logs/console.log

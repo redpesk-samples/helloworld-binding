@@ -47,6 +47,22 @@ The binding exposes the `helloworld` API through [`afb-binder`](https://docs.red
 
 The binding itself does not depend on external hardware. It can therefore be executed on a development host, in a redpesk development environment (like using the [localbuilder](https://docs.redpesk.bzh/docs/en/master/getting_started/local_builder_quickstart/docs/quickstart/0_quick-installation.html)), or on a redpesk target (QEMU, aarch64 or x86_64 [target](https://docs.redpesk.bzh/docs/en/master/download/boards/docs/boards/download-images.html)).
 
+## Shared API contract
+
+The service exposes:
+
+- API `helloworld`;
+- verb `hello`;
+- verb `sum`;
+- verb `info`;
+- event `helloworld/verb_called`.
+
+The C/C++, Python and Rust samples expose the same public verbs and event and keep the same essential request semantics. Language-specific implementation details are intentionally not part of the shared API contract.
+
+The C and C++ implementations keep their native AFB/json-c conversion behavior for `hello`. The `sum` verb uses signed 64-bit wrapping semantics, matching the shared contract used by the Python and Rust samples.
+
+The `info` verb is implemented explicitly from the static metadata stored in `src/info_verb.json`.
+
 ## Binding lifecycle
 
 The binding registers a `mainctl` callback. During the AFB initialization stage, this callback creates the `verb_called` event used by the sample.
@@ -81,3 +97,17 @@ This makes the project useful as a compact reference when comparing both AFB pro
 The project includes RPM packaging, an application manifest and redtest support so that the same sample can be used from local development through package deployment and validation on redpesk.
 
 For platform-level topics such as creating a redpesk project, building applications and managing targets, refer to the [redpesk developer getting started guide](https://docs.redpesk.bzh/docs/en/master/getting_started/quickstart/02-overview-developer.html).
+
+## Project layout
+
+The main project files are organized as follows:
+
+```text
+src/                            C and C++ binding implementations
+rpconfig/manifest.yml           redpesk application manifest
+redtest/run-redtest             redtest entry point
+redtest/tests.py                functional tests
+docs/                           project documentation
+helloworld-binding.spec         RPM packaging
+CMakeLists.txt                  CMake build configuration
+```

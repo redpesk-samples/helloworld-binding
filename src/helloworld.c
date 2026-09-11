@@ -116,7 +116,8 @@ static void hello_verb(afb_req_t req, unsigned nparams, afb_data_t const *params
     // Create reply string; use snprintf to avoid overflows caused by a long enough parameter
     rc = snprintf(reply_str, sizeof(reply_str), "Hello %s!", who);
     reply_str[sizeof(reply_str) - 1] = '\0';
-    afb_create_data_copy(&reply, AFB_PREDEFINED_TYPE_STRINGZ, reply_str, (size_t)(rc + 1));
+    afb_create_data_copy(&reply, AFB_PREDEFINED_TYPE_STRINGZ, reply_str,
+                         strlen(reply_str) + 1);
 
     afb_req_reply(req, 0, 1, &reply);
 }
@@ -154,7 +155,9 @@ static void sum_verb(afb_req_t req, unsigned nparams, afb_data_t const *params)
         // If an item is not an integer, stop and fail
         if (json_object_get_type(item) != json_type_int)
             goto err;
-        sum += json_object_get_int64(item);
+        // Keep the shared API's signed 64-bit wrapping semantics without
+        // relying on undefined signed-overflow behavior.
+        (void)__builtin_add_overflow(sum, json_object_get_int64(item), &sum);
     }
 
     // Reply

@@ -1,14 +1,15 @@
-# Build and Installation
+# Build and installation
 
 ## Prerequisites
 
-The recommended development setup is to build and install the redpesk framework locally from sources. This avoids relying on a prepackaged SDK and allows the framework to be used on different Linux distributions. Follow [Build framework on your computer](https://docs.redpesk.bzh/docs/en/master/redpesk-os/host-build/README.html) to prepare the AFB development environment.
+Two development setups can be used with this sample:
 
-### Build in the SDK container
+- the redpesk SDK container, which provides an isolated OCI-based development environment;
+- a redpesk framework built and installed locally from sources.
 
-As an alternative to installing the development environment directly on the host, the redpesk SDK container provides an isolated environment for building the sample. See the [SDK container overview](https://docs.redpesk.bzh/docs/en/master/redpesk-os/sdk-container/docs/0-overview.html) for an introduction.
+For the container-based setup, see the [SDK container overview](https://docs.redpesk.bzh/docs/en/master/redpesk-os/sdk-container/docs/0-overview.html) and follow the [SDK container setup](https://docs.redpesk.bzh/docs/en/master/redpesk-os/sdk-container/docs/1-setup.html).
 
-Follow [SDK container setup](https://docs.redpesk.bzh/docs/en/master/redpesk-os/sdk-container/docs/1-setup.html) to prepare the container. Once the environment is started, the source-build commands documented below can be run from inside the container.
+For a host installation, follow [Build framework on your computer](https://docs.redpesk.bzh/docs/en/master/redpesk-os/host-build/README.html) to build and install the AFB runtime and development environment from sources.
 
 For binder usage, see [Getting the binder](https://docs.redpesk.bzh/docs/en/master/redpesk-os/afb-binder/afb-getting.html).
 
@@ -18,40 +19,6 @@ The main build dependencies are:
 - a C compiler, and a C++ compiler when building the C++ implementation;
 - `json-c` development files;
 - AFB Binding V4 development files (`afb-binding >= 4.1.0`).
-
-When using an RPM-based redpesk development environment, the build dependencies can alternatively be installed with:
-
-```bash
-dnf builddep helloworld-binding
-```
-
-## Install from packages
-
-On a system configured with the appropriate redpesk repositories, install the binding with:
-
-```bash
-dnf install helloworld-binding
-```
-
-The packaged binding is installed under:
-
-```text
-/usr/redpesk/helloworld-binding/
-```
-
-The shared library is located at:
-
-```text
-/usr/redpesk/helloworld-binding/lib/helloworld-binding.so
-```
-
-To verify the installed files, run:
-
-```bash
-rpm -ql helloworld-binding
-```
-
-For package deployment on a redpesk target, refer to the [redpesk application deployment documentation](https://docs.redpesk.bzh/docs/en/master/getting_started/docs/deployment.html).
 
 ## Build from sources
 
@@ -97,3 +64,43 @@ sudo cmake --install build
 The installation prefix can be customized at configuration time with `CMAKE_INSTALL_PREFIX` and the application directory with `AFM_APP_DIR`.
 
 For development and validation, installing the source build is not required: `afb-binder` can load the shared library directly from the build directory.
+
+## Build the RPM package
+
+RPM builds are handled by the redpesk factory tooling. The repository GitLab CI build job uses the official redpesk factory CI template and builds the package from `helloworld-binding.spec`.
+
+The same package can be built through a redpesk factory or a configured [redpesk local builder](https://docs.redpesk.bzh/docs/en/master/getting_started/local_builder_quickstart/docs/quickstart/0_quick-installation.html).
+
+When using an RPM-based redpesk development environment, install the package build dependencies with:
+
+```bash
+dnf builddep helloworld-binding
+```
+
+## Install from packages
+
+On a system configured with the appropriate redpesk repositories, install the binding with:
+
+```bash
+dnf install helloworld-binding
+```
+
+The packaged binding is installed under:
+
+```text
+/usr/redpesk/helloworld-binding/
+```
+
+The shared library is located at:
+
+```text
+/usr/redpesk/helloworld-binding/lib/helloworld-binding.so
+```
+
+To verify the installed files, run:
+
+```bash
+rpm -ql helloworld-binding
+```
+
+For package deployment on a redpesk target, refer to the [redpesk application deployment documentation](https://docs.redpesk.bzh/docs/en/master/getting_started/docs/deployment.html).

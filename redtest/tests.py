@@ -71,6 +71,8 @@ class TestHelloWorld(AFBTestCase):
             ([2**40], 2**40),
             ([2**63 - 1], 2**63 - 1),
             ([-(2**63)], -(2**63)),
+            ([2**63 - 1, 1], -(2**63)),
+            ([-(2**63), -1], 2**63 - 1),
             ([], 0),
         ]:
             r = libafb.callsync(self.binder, "helloworld", "sum", arg)

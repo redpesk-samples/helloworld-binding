@@ -1,4 +1,4 @@
-# API Reference
+# API reference
 
 ## API
 
@@ -66,7 +66,7 @@ afb-client -H localhost:1234/api helloworld sum '[1,2,3,4]'
 
 ### Reply sum
 
-The reply is a signed 64-bit integer containing the sum of all array elements.
+The reply is a signed 64-bit integer containing the sum of all array elements. The accumulation uses signed 64-bit wrapping semantics as part of the shared `sum` API contract.
 
 For the previous example, the result is:
 

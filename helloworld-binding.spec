@@ -1,13 +1,20 @@
 Name:    helloworld-binding
 Version: 2.0.0
 Release: 1%{?dist}
-License: Apache-2.0
+License: MIT
 Summary: helloworld service set to be used in redpesk
 URL:     https://github.com/redpesk-samples/helloworld-binding
 Source:  %{name}-%{version}.tar.gz
 
 %bcond_with no_coverage
 %bcond_with cpp
+
+%if %{without no_coverage}
+# Coverage builds remap source paths outside the RPM build tree, which makes
+# automatic debugsource generation empty. Coverage data is provided by the
+# redtest subpackage instead.
+%global debug_package %{nil}
+%endif
 
 %if %{with cpp}
 %global cpp_build ON
@@ -80,11 +87,9 @@ cd build
 cd ..
 
 %if %{without no_coverage}
-# Reuse the same instrumented binary for redtest instead of rebuilding it.
-install -Dm755 build/%{__cmake_builddir}/helloworld-binding.so \
-  %{buildroot}%{coverage_dir}/%{name}/lib/helloworld-binding.so
-
-# Copy the coverage metadata (.gcno) into the coverage_data directory.
+# The main package already contains the instrumented binding used by redtest.
+# Only copy the coverage metadata (.gcno) into the coverage_data directory.
+mkdir -p %{buildroot}%{coverage_dir}
 cd build/%{__cmake_builddir}
 find . -name "*.gcno" -exec cp --parents {} %{buildroot}%{coverage_dir}/ \;
 cd ../..
@@ -104,6 +109,8 @@ rm -rf %{buildroot}%{_libexecdir}/redtest/%{name}
 
 %files
 %defattr(-,root,root)
+%license LICENSE
+%doc README.md CHANGELOG
 %dir %{_afmappdir}/%{name}
 %{_afmappdir}/%{name}/lib/
 %{_afmappdir}/%{name}/.rpconfig/

@@ -1,5 +1,13 @@
-1.1.0
------
+# Changelog
 
-- migration to manifest.yml
+## 2.0.0
 
+- Update the sample as an AFB Binding V4 reference implementation.
+- Add equivalent C and C++ implementations selectable at build time.
+- Reorganize the documentation and add links to the official redpesk documentation.
+- Rework RPM packaging with build conditionals for C/C++ selection and coverage.
+- Rework redtest integration and coverage collection for local and packaged execution.
+
+## 1.1.0
+
+- Migrate to `manifest.yml`.

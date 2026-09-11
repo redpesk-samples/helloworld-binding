@@ -10,10 +10,10 @@ books:
     - url: 1-Overview.md
       name: Overview
     - url: 2-Build-and-Installation.md
-      name: Build and Installation
+      name: Build and installation
     - url: 3-Configuration-and-Usage.md
-      name: Configuration and Usage
+      name: Configuration and usage
     - url: 4-API-Reference.md
-      name: API Reference
+      name: API reference
     - url: 5-Validation-and-Testing.md
-      name: Validation and Testing
+      name: Validation and testing

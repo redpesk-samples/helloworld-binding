@@ -1,10 +1,10 @@
-# Configuration and Usage
+# Configuration and usage
 
 ## Runtime configuration
 
-`helloworld-binding` does not require an application-specific runtime configuration file. The binding is loaded by `afb-binder` and exposes the `helloworld` API. For the complete binder command-line interface, refer to the [`afb-binder` manual](https://docs.redpesk.bzh/docs/en/master/redpesk-os/afb-binder/afb-binder.1.html).
+`helloworld-binding` does not require an application-specific runtime configuration file. For source-tree development, the binding is loaded by `afb-binder` and exposes the `helloworld` API. For the complete binder command-line interface, refer to the [`afb-binder` manual](https://docs.redpesk.bzh/docs/en/master/redpesk-os/afb-binder/afb-binder.1.html).
 
-When installed as a redpesk package, the `manifest.yml` (stored in the sources in `.rpconfig/manifest.yml`) describes the packaged service and declares the `helloworld` API to the redpesk application framework.
+When installed as a redpesk package, `manifest.yml` describes the packaged service and declares the `helloworld` API to the redpesk application framework. It is stored as `rpconfig/manifest.yml` in the sources and installed as `.rpconfig/manifest.yml` in the application directory.
 
 ## Run a source build
 
@@ -16,66 +16,27 @@ afb-binder -v -b ./build/helloworld-binding.so
 
 Unless another port is configured, the binder listens on port `1234`.
 
-## Run the installed binding
+## Run the installed service
 
-For an RPM installation, load the packaged shared library:
+Start the packaged redpesk application through the application framework:
 
 ```bash
-afb-binder -v -b /usr/redpesk/helloworld-binding/lib/helloworld-binding.so
+afm-util start helloworld-binding
 ```
+
+Loading the installed shared library directly with `afb-binder` can be useful for development or debugging, but it bypasses the normal application-framework startup path and should not be used as the standard packaged-service workflow.
 
 ## Call the API
 
-Use `afb-client` from another terminal to call the API.
-
-Call `hello` without an argument:
+When the source build is started manually with `afb-binder` on the default port, use `afb-client` from another terminal:
 
 ```bash
 afb-client -H localhost:1234/api helloworld hello
 ```
 
-The reply contains:
+A packaged application started through `afm-util` may expose the API through a transport selected by the application framework, such as a Unix socket, so do not assume that `localhost:1234` is available in that mode. Use the endpoint provided by the application configuration.
 
-```text
-Hello world!
-```
-
-Call `hello` with a value:
-
-```bash
-afb-client -H localhost:1234/api helloworld hello Bob
-```
-
-The reply contains:
-
-```text
-Hello Bob!
-```
-
-Call `sum` with a JSON array of integers:
-
-```bash
-afb-client -H localhost:1234/api helloworld sum '[1,2,3,4]'
-```
-
-The returned value is `10`.
-
-The complete request and response contract is described in the [API Reference](./4-API-Reference.html).
-
-## Events
-
-Calls to `hello` and `sum` publish the `helloworld/verb_called` event. The client is automatically subscribed the first time one of these verbs is called.
-
-For example, calling `hello` produces an event whose payload is the called verb name:
-
-```json
-{
-  "event": "helloworld/verb_called",
-  "data": "hello"
-}
-```
-
-This behavior demonstrates AFB event publication, subscription and per-client context management in a minimal example.
+Calls to the application verbs also publish the `helloworld/verb_called` event. See the [API reference](./4-API-Reference.html) for the complete verb, request, reply and event contract.
 
 ## Running on a redpesk target
 
@@ -88,7 +49,7 @@ Target provisioning, image boot and package deployment are platform-level operat
 
 ## Troubleshooting
 
-If the binder cannot load the binding, first verify that the shared library exists at the path passed to `-b` and that its runtime dependencies are available.
+If the binder cannot load the binding during local development, first verify that the shared library exists at the path passed to `-b` and that its runtime dependencies are available.
 
 For an installed package:
 
@@ -102,7 +63,7 @@ For a local build:
 ls -l ./build/helloworld-binding.so
 ```
 
-Increase binder verbosity when diagnosing API loading or request handling issues:
+Increase binder verbosity when diagnosing local API loading or request handling issues:
 
 ```bash
 afb-binder -vvv -b ./build/helloworld-binding.so

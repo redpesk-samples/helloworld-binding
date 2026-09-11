@@ -74,7 +74,6 @@ VERBS
 // Receives a string, replies with another string
 static void hello_verb(afb::req req, afb::received_data params)
 {
-    int rc;
     const char *who = "world";
     const char *who_arg;
     char reply_str[100];
@@ -91,11 +90,11 @@ static void hello_verb(afb::req req, afb::received_data params)
     }
 
     // Create reply string; use snprintf to avoid overflows caused by a long enough parameter
-    rc = snprintf(reply_str, sizeof(reply_str), "Hello %s!", who);
+    snprintf(reply_str, sizeof(reply_str), "Hello %s!", who);
     reply_str[sizeof(reply_str) - 1] = '\0';
 
     // Create reply data and reply
-    afb::data reply(afb::STRINGZ(), reply_str, (size_t)(rc + 1));
+    afb::data reply(afb::STRINGZ(), reply_str, strlen(reply_str) + 1);
     req.reply(0, reply);
 }
 
@@ -131,7 +130,9 @@ static void sum_verb(afb::req req, afb::received_data params)
         // If an item is not an integer, stop and fail
         if (json_object_get_type(item) != json_type_int)
             goto err;
-        sum += json_object_get_int64(item);
+        // Keep the shared API's signed 64-bit wrapping semantics without
+        // relying on undefined signed-overflow behavior.
+        (void)__builtin_add_overflow(sum, json_object_get_int64(item), &sum);
     }
 
     // Reply

@@ -1,4 +1,4 @@
-# Validation and Testing
+# Validation and testing
 
 ## Test strategy
 
@@ -17,7 +17,7 @@ The tests cover:
 
 The Python functional tests use `afb-test-py` and `afb-libpython`.
 
-First prepare the AFB development environment by following [Build framework on your computer](https://docs.redpesk.bzh/docs/en/master/redpesk-os/host-build/README.html).
+Prepare one of the development environments described in [Build and installation](./2-Build-and-Installation.html) before running the functional tests.
 
 When using an RPM-based redpesk development environment, the test dependencies can alternatively be installed with:
 
@@ -56,9 +56,8 @@ A successful run ends with all test cases reported as successful.
 
 ## redtest package
 
-The RPM specification provides the `helloworld-binding-redtest` sub-package. It contains:
+The RPM specification provides the `helloworld-binding-redtest` subpackage. The default coverage-enabled RPM build instruments the binding installed by the main `helloworld-binding` package. The redtest subpackage contains:
 
-- an instrumented build of the binding for code coverage;
 - `tests.py`;
 - the `run-redtest` entry point;
 - coverage metadata;

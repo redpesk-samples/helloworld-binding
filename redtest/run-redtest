@@ -11,6 +11,7 @@ PROJECT_ROOT=$(cd -- "${SCRIPT_DIR}/.." &>/dev/null && pwd)
 
 COVERAGE_DIR="${SCRIPT_DIR}/coverage_data"
 BUILD_DIR="${PROJECT_ROOT}/build"
+INSTALLED_LIB_DIR="/usr/redpesk/${PACKAGE_NAME}/lib"
 
 # Detect source tree location.
 if [[ -f "${SCRIPT_DIR}/sources/src/helloworld.c" ]]; then
@@ -30,8 +31,8 @@ export GCOV_PREFIX_STRIP=5
 
 # Build LD_LIBRARY_PATH dynamically.
 LIB_PATHS=()
-if [[ -d "${COVERAGE_DIR}/${PACKAGE_NAME}/lib" ]]; then
-    LIB_PATHS+=("${COVERAGE_DIR}/${PACKAGE_NAME}/lib")
+if [[ -d "${INSTALLED_LIB_DIR}" ]]; then
+    LIB_PATHS+=("${INSTALLED_LIB_DIR}")
 fi
 if [[ -d "${BUILD_DIR}" ]]; then
     LIB_PATHS+=("${BUILD_DIR}")
