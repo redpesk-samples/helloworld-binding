@@ -1,20 +1,62 @@
 #!/bin/bash
-
-# when this script will be run, the packages your-application.rpm and your-application-redtest.rpm
-# would have been installed on the target
+set -euo pipefail
+set -x
 
 PACKAGE_NAME="helloworld-binding"
 
-# Create the directory where the logs need to be
-LOG_DIR="/var/log/redtest/${PACKAGE_NAME}"
-mkdir -p ${LOG_DIR}
-
-# Run your tests (generate .tap file for redpesk)
 echo "--- Start test python hello world binding ---"
+
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
-export GCOV_PREFIX=${SCRIPT_DIR}/coverage_data/
+PROJECT_ROOT=$(cd -- "${SCRIPT_DIR}/.." &>/dev/null && pwd)
+
+COVERAGE_DIR="${SCRIPT_DIR}/coverage_data"
+BUILD_DIR="${PROJECT_ROOT}/build"
+
+# Detect source tree location.
+if [[ -f "${SCRIPT_DIR}/sources/src/helloworld.c" ]]; then
+    SOURCE_BASE="${SCRIPT_DIR}/sources"
+else
+    SOURCE_BASE="${PROJECT_ROOT}"
+fi
+
+# Prepare coverage output directory.
+mkdir -p "${COVERAGE_DIR}"
+
+# Clean previous runtime coverage data only.
+find "${COVERAGE_DIR}" -name '*.gcda' -delete 2>/dev/null || true
+
+export GCOV_PREFIX="${COVERAGE_DIR}/"
 export GCOV_PREFIX_STRIP=5
-LD_LIBRARY_PATH=${SCRIPT_DIR}/coverage_data/${PACKAGE_NAME}/lib/ python3 "${SCRIPT_DIR}/tests.py" --tap | tee /var/log/redtest/${PACKAGE_NAME}/helloworld.tap 2>&1
+
+# Build LD_LIBRARY_PATH dynamically.
+LIB_PATHS=()
+if [[ -d "${COVERAGE_DIR}/${PACKAGE_NAME}/lib" ]]; then
+    LIB_PATHS+=("${COVERAGE_DIR}/${PACKAGE_NAME}/lib")
+fi
+if [[ -d "${BUILD_DIR}" ]]; then
+    LIB_PATHS+=("${BUILD_DIR}")
+fi
+
+if [[ ${#LIB_PATHS[@]} -eq 0 ]]; then
+    echo "ERROR: no library path found for ${PACKAGE_NAME}" >&2
+    exit 1
+fi
+
+LD_LIBRARY_PATH_VALUE="$(IFS=:; echo "${LIB_PATHS[*]}")"
+if [[ -n "${LD_LIBRARY_PATH:-}" ]]; then
+    LD_LIBRARY_PATH_VALUE="${LD_LIBRARY_PATH_VALUE}:${LD_LIBRARY_PATH}"
+fi
+export LD_LIBRARY_PATH="${LD_LIBRARY_PATH_VALUE}"
+
+# Create the directory where logs need to be written.
+LOG_DIR="${LOG_DIR:-/var/log/redtest/${PACKAGE_NAME}}"
+if ! mkdir -p "${LOG_DIR}" 2>/dev/null || [[ ! -w "${LOG_DIR}" ]]; then
+    LOG_DIR="${PROJECT_ROOT}/logs"
+    mkdir -p "${LOG_DIR}"
+fi
+export LOG_DIR
+
+python3 "${SCRIPT_DIR}/tests.py" --tap | tee "${LOG_DIR}/helloworld.tap" 2>&1
 
 ##########################
 # Coverage report section
@@ -22,30 +64,35 @@ LD_LIBRARY_PATH=${SCRIPT_DIR}/coverage_data/${PACKAGE_NAME}/lib/ python3 "${SCRI
 
 echo "--- Generating coverage reports ---"
 
-# Clean previous coverage data
-rm -f lcov_cobertura*
-rm -rf lcov_cobertura-*
+rm -f app.info
 
-# Download lcov_cobertura tool
-wget https://github.com/eriwen/lcov-to-cobertura-xml/releases/download/v2.1.1/lcov_cobertura-2.1.1.tar.gz
-tar xzvf lcov_cobertura-2.1.1.tar.gz
+if python3 -m lcov_cobertura --help >/dev/null 2>&1; then
+    echo "lcov_cobertura installed successfully."
+else
+    python3 -m pip install lcov_cobertura
+fi
 
-# Generate lcov info file
-rm -f app.info app_filtered.info
-lcov --directory "${SCRIPT_DIR}/coverage_data/" --capture --output-file app.info
+LCOV_ARGS=(
+    --directory "${COVERAGE_DIR}"
+    --base-directory "${SOURCE_BASE}"
+    --capture
+    --no-external
+    --output-file app.info
+)
 
-# Remove system headers and other noise
-lcov --remove app.info '/usr/*' -o app_filtered.info
+# In local mode, .gcno files are in ./build, not in coverage_data.
+if ! find "${COVERAGE_DIR}" -name '*.gcno' -print -quit | grep -q .; then
+    LCOV_ARGS+=(--build-directory "${PROJECT_ROOT}")
+fi
 
-# Show coverage summary (will appear in GitLab CI logs)
-lcov --list app_filtered.info
+lcov "${LCOV_ARGS[@]}"
 
-# Generate Cobertura-compatible XML for GitLab coverage
-PYTHONPATH=./lcov_cobertura-2.1.1/ python3 -m lcov_cobertura app_filtered.info -o ${LOG_DIR}/coverage.xml
+lcov --summary app.info
+lcov_cobertura app.info -o "${LOG_DIR}/coverage.xml"
 
 echo "--- Coverage report generated at ${LOG_DIR}/ ---"
 
 ##########################
-# report status
+# Report status
 ##########################
-test -f /var/log/redtest/${PACKAGE_NAME}/helloworld.tap && grep -viq '^not ok' /var/log/redtest/${PACKAGE_NAME}/helloworld.tap
+test -f "${LOG_DIR}/helloworld.tap" && grep -viq '^not ok' "${LOG_DIR}/helloworld.tap"

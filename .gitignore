@@ -5,3 +5,7 @@ nbproject/
 .*.sw*
 *.tar.gz
 __*
+lcov_*
+
+app*.info
+logs/

@@ -16,7 +16,11 @@ Source:  %{name}-%{version}.tar.gz
 %endif
 
 %global _afmappdir %{_prefix}/redpesk
+
+%if %{without no_coverage}
 %global coverage_dir %{_libexecdir}/redtest/%{name}/coverage_data
+%global redtest_srcdir %{_libexecdir}/redtest/%{name}/sources
+%endif
 
 BuildRequires: cmake
 BuildRequires: gcc
@@ -37,8 +41,9 @@ Requires: %{name} = %{version}-%{release}
 Requires: lcov
 Requires: afb-test-py
 Requires: afb-libpython
-# Download cobertura in run-redtest
-Requires: wget tar
+Requires: pkgconfig(afb-binding)
+Requires: python3-pip
+
 %description redtest
 This package contains binaries built with coverage instrumentation.
 %endif
@@ -47,14 +52,20 @@ This package contains binaries built with coverage instrumentation.
 %autosetup -p 1
 
 %build
+%if %{without no_coverage}
+# Remap build-time source paths to the source tree packaged with redtest.
+SRCROOT="$(pwd)"
+COVSRC="%{redtest_srcdir}"
+%endif
+
 mkdir build && cd build
 %cmake \
   -DCPP=%{cpp_build} \
   -DAFM_APP_DIR=%{_afmappdir} \
 %if %{without no_coverage}
   -DCMAKE_BUILD_TYPE=Debug \
-  -DCMAKE_C_FLAGS="--coverage -fPIC" \
-  -DCMAKE_CXX_FLAGS="--coverage -fPIC" \
+  -DCMAKE_C_FLAGS="--coverage -fPIC -ffile-prefix-map=${SRCROOT}=${COVSRC} -fdebug-prefix-map=${SRCROOT}=${COVSRC}" \
+  -DCMAKE_CXX_FLAGS="--coverage -fPIC -ffile-prefix-map=${SRCROOT}=${COVSRC} -fdebug-prefix-map=${SRCROOT}=${COVSRC}" \
 %else
   -DCMAKE_BUILD_TYPE=Release \
 %endif
@@ -80,7 +91,11 @@ cd ../..
 
 # Install redtest scripts (for testing)
 install -Dm755 redtest/run-redtest %{buildroot}%{_libexecdir}/redtest/%{name}/run-redtest
-install -Dm644 tests/tests.py %{buildroot}%{_libexecdir}/redtest/%{name}/tests.py
+install -Dm644 redtest/tests.py %{buildroot}%{_libexecdir}/redtest/%{name}/tests.py
+
+# Install sources needed by coverage tools.
+mkdir -p %{buildroot}%{redtest_srcdir}
+cp -a src %{buildroot}%{redtest_srcdir}/
 %else
 # CMake installs these helper files unconditionally; remove them when
 # the redtest subpackage is disabled.
@@ -99,4 +114,5 @@ rm -rf %{buildroot}%{_libexecdir}/redtest/%{name}
 %{_libexecdir}/redtest/%{name}/run-redtest
 %{_libexecdir}/redtest/%{name}/tests.py
 %{coverage_dir}
+%{redtest_srcdir}/src/*
 %endif

@@ -37,19 +37,19 @@ cmake --build build
 Then run the test suite with the build directory in the library search path:
 
 ```bash
-LD_LIBRARY_PATH=./build python3 ./tests/tests.py
+LD_LIBRARY_PATH=./build python3 ./redtest/tests.py
 ```
 
 To produce TAP output:
 
 ```bash
-LD_LIBRARY_PATH=./build python3 ./tests/tests.py --tap
+LD_LIBRARY_PATH=./build python3 ./redtest/tests.py --tap
 ```
 
-The helper script `tests/run.sh` can also be used for the default local build directory:
+The helper script `redtest/run.sh` can also be used for the default local build directory:
 
 ```bash
-./tests/run.sh
+./redtest/run.sh
 ```
 
 A successful run ends with all test cases reported as successful.
@@ -60,7 +60,17 @@ The RPM specification provides the `helloworld-binding-redtest` sub-package. It 
 
 - an instrumented build of the binding for code coverage;
 - `tests.py`;
-- the `run-redtest` entry point.
+- the `run-redtest` entry point;
+- coverage metadata;
+- the project sources under a stable path used by `lcov`.
+
+The coverage build remaps build-time source paths to:
+
+```text
+/usr/libexec/redtest/helloworld-binding/sources
+```
+
+This allows target-side coverage tools to resolve the original source files after the temporary RPM build directory has disappeared.
 
 Install it together with the binding on a compatible redpesk test environment:
 
@@ -94,6 +104,28 @@ The main outputs are:
 - `coverage.xml`: code coverage in Cobertura-compatible XML format.
 
 The runner returns a failure status when the TAP report contains a `not ok` result, allowing the test to be integrated into automated validation pipelines.
+
+When `/var/log/redtest/helloworld-binding/` is not writable, for example during local development, the runner falls back to a `logs/` directory at the project root.
+
+## Local coverage workflow
+
+For local coverage collection, configure the regular `build/` directory with GCC coverage instrumentation:
+
+```bash
+cmake -S . -B build \
+  -DCMAKE_BUILD_TYPE=Debug \
+  -DCMAKE_C_FLAGS="--coverage -fPIC" \
+  -DCMAKE_CXX_FLAGS="--coverage -fPIC"
+cmake --build build
+```
+
+Then run the redtest entry point from the source tree:
+
+```bash
+./redtest/run-redtest
+```
+
+The runner detects whether it is executing from an installed redtest package or from the project source tree, configures the binding search path accordingly, captures LCOV data, and generates `coverage.xml`.
 
 ## redpesk validation workflow
 

@@ -18,7 +18,7 @@ default:
 lint:
   stage: lint
   script:
-    - bash -x tests/ci/lint.sh
+    - bash -x redtest/ci/lint.sh
   allow_failure: true
 
 build:

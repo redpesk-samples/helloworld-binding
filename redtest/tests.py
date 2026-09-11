@@ -2,7 +2,7 @@ from afb_test import AFBTestCase, configure_afb_binding_tests, run_afb_binding_t
 
 import libafb
 
-bindings = {"helloworld": f"helloworld-binding.so"}
+bindings = {"helloworld": "helloworld-binding.so"}
 
 
 def setUpModule():
@@ -10,7 +10,6 @@ def setUpModule():
 
 
 class TestHelloWorld(AFBTestCase):
-
     def test_hello_verb(self):
         """Test hello verb"""
         r = libafb.callsync(self.binder, "helloworld", "hello")
@@ -54,10 +53,10 @@ class TestHelloWorld(AFBTestCase):
         """Test Verb Failing"""
 
         with self.assertRaises(OverflowError):
-            r = libafb.callsync(self.binder, "helloworld", "hello", 2**63)
+            libafb.callsync(self.binder, "helloworld", "hello", 2**63)
 
         with self.assertRaises(OverflowError):
-            r = libafb.callsync(self.binder, "helloworld", "hello", 2**64 - 1)
+            libafb.callsync(self.binder, "helloworld", "hello", 2**64 - 1)
 
     def test_hello_evt(self):
         """Test hello event"""
