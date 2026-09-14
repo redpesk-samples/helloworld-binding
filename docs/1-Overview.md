@@ -45,7 +45,7 @@ The binding exposes the `helloworld` API through [`afb-binder`](https://docs.red
                  +----------------------+
 ```
 
-The binding itself does not depend on external hardware. It can therefore be executed on a development host, in a redpesk development environment, or on a redpesk target.
+The binding itself does not depend on external hardware. It can therefore be executed on a development host, in a redpesk development environment (like using the [localbuilder](https://docs.redpesk.bzh/docs/en/master/getting_started/local_builder_quickstart/docs/quickstart/0_quick-installation.html)), or on a redpesk target (QEMU, aarch64 or x86_64 [target](https://docs.redpesk.bzh/docs/en/master/download/boards/docs/boards/download-images.html)).
 
 ## Binding lifecycle
 

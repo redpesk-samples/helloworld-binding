@@ -17,7 +17,9 @@ The tests cover:
 
 The Python functional tests use `afb-test-py` and `afb-libpython`.
 
-On a redpesk SDK or compatible development system, install the required packages with:
+First prepare the AFB development environment by following [Build framework on your computer](https://docs.redpesk.bzh/docs/en/master/redpesk-os/host-build/README.html).
+
+When using an RPM-based redpesk development environment, the test dependencies can alternatively be installed with:
 
 ```bash
 sudo dnf install afb-binder afb-client afb-binding-devel afb-libpython afb-test-py

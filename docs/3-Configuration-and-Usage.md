@@ -4,7 +4,7 @@
 
 `helloworld-binding` does not require an application-specific runtime configuration file. The binding is loaded by `afb-binder` and exposes the `helloworld` API. For the complete binder command-line interface, refer to the [`afb-binder` manual](https://docs.redpesk.bzh/docs/en/master/redpesk-os/afb-binder/afb-binder.1.html).
 
-When installed as a redpesk package, `.rpconfig/manifest.yml` describes the packaged service and declares the `helloworld` API to the redpesk application framework.
+When installed as a redpesk package, the `manifest.yml` (stored in the sources in `.rpconfig/manifest.yml`) describes the packaged service and declares the `helloworld` API to the redpesk application framework.
 
 ## Run a source build
 

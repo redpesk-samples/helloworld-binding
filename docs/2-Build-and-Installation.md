@@ -2,9 +2,15 @@
 
 ## Prerequisites
 
-The recommended development environment is the redpesk SDK, which provides the AFB development stack and the packages required to build bindings.
+The recommended development setup is to build and install the redpesk framework locally from sources. This avoids relying on a prepackaged SDK and allows the framework to be used on different Linux distributions. Follow [Build framework on your computer](https://docs.redpesk.bzh/docs/en/master/redpesk-os/host-build/README.html) to prepare the AFB development environment.
 
-For more information, see [Setup your build host](https://docs.redpesk.bzh/docs/en/master/getting_started/host-configuration/docs/1-Setup-your-build-host.html) and [Getting the binder](https://docs.redpesk.bzh/docs/en/master/redpesk-os/afb-binder/afb-getting.html) in the official redpesk documentation.
+### Build in the SDK container
+
+As an alternative to installing the development environment directly on the host, the redpesk SDK container provides an isolated environment for building the sample. See the [SDK container overview](https://docs.redpesk.bzh/docs/en/master/redpesk-os/sdk-container/docs/0-overview.html) for an introduction.
+
+Follow [SDK container setup](https://docs.redpesk.bzh/docs/en/master/redpesk-os/sdk-container/docs/1-setup.html) to prepare the container. Once the environment is started, the source-build commands documented below can be run from inside the container.
+
+For binder usage, see [Getting the binder](https://docs.redpesk.bzh/docs/en/master/redpesk-os/afb-binder/afb-getting.html).
 
 The main build dependencies are:
 
@@ -13,7 +19,7 @@ The main build dependencies are:
 - `json-c` development files;
 - AFB Binding V4 development files (`afb-binding >= 4.1.0`).
 
-When the redpesk source repositories are configured, the RPM build dependencies can be installed with:
+When using an RPM-based redpesk development environment, the build dependencies can alternatively be installed with:
 
 ```bash
 dnf builddep helloworld-binding
