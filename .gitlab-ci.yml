@@ -11,9 +11,10 @@ stages:
   - build
   - redtest
 
+
 default:
   tags:
-    - redpesk-binding-ci
+    - redpesk-binding-ci  
 
 lint:
   stage: lint
@@ -22,11 +23,13 @@ lint:
   allow_failure: true
 
 build:
+  image: registry.redpesk.bzh/factory-test/rp-cli:latest
   stage: build
   extends:
     - .rp-cli-build
 
 redtest:
+  image: registry.redpesk.bzh/factory-test/rp-cli:latest
   stage: redtest
   needs:
     - build

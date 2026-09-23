@@ -88,11 +88,14 @@ cd ..
 
 %if %{without no_coverage}
 # The main package already contains the instrumented binding used by redtest.
-# Only copy the coverage metadata (.gcno) into the coverage_data directory.
+# Preserve the CMake build directory in the coverage metadata layout. Runtime
+# .gcda files generated through GCOV_PREFIX/GCOV_PREFIX_STRIP keep this level
+# (for example redhat-linux-build/), so .gcno files must use the same path.
 mkdir -p %{buildroot}%{coverage_dir}
-cd build/%{__cmake_builddir}
-find . -name "*.gcno" -exec cp --parents {} %{buildroot}%{coverage_dir}/ \;
-cd ../..
+cd build
+find %{__cmake_builddir} -name "*.gcno" \
+  -exec cp --parents {} %{buildroot}%{coverage_dir}/ \;
+cd ..
 
 # Install redtest scripts (for testing)
 install -Dm755 redtest/run-redtest %{buildroot}%{_libexecdir}/redtest/%{name}/run-redtest
