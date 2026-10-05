@@ -3,6 +3,7 @@ set -euo pipefail
 set -x
 
 PACKAGE_NAME="helloworld-binding"
+COVERAGE=no
 
 echo "--- Start test python hello world binding ---"
 
@@ -20,14 +21,16 @@ else
     SOURCE_BASE="${PROJECT_ROOT}"
 fi
 
-# Prepare coverage output directory.
-mkdir -p "${COVERAGE_DIR}"
+if [[ "${COVERAGE}" == "yes" ]]; then
+    # Prepare coverage output directory.
+    mkdir -p "${COVERAGE_DIR}"
 
-# Clean previous runtime coverage data only.
-find "${COVERAGE_DIR}" -name '*.gcda' -delete 2>/dev/null || true
+    # Clean previous runtime coverage data only.
+    find "${COVERAGE_DIR}" -name '*.gcda' -delete 2>/dev/null || true
 
-export GCOV_PREFIX="${COVERAGE_DIR}/"
-export GCOV_PREFIX_STRIP=5
+    export GCOV_PREFIX="${COVERAGE_DIR}/"
+    export GCOV_PREFIX_STRIP=5
+fi
 
 # Build LD_LIBRARY_PATH dynamically.
 LIB_PATHS=()
@@ -63,35 +66,37 @@ python3 "${SCRIPT_DIR}/tests.py" --tap | tee "${LOG_DIR}/helloworld.tap" 2>&1
 # Coverage report section
 ##########################
 
-echo "--- Generating coverage reports ---"
+if [[ "${COVERAGE}" == "yes" ]]; then
+    echo "--- Generating coverage reports ---"
 
-rm -f app.info
+    rm -f app.info
 
-if python3 -m lcov_cobertura --help >/dev/null 2>&1; then
-    echo "lcov_cobertura installed successfully."
-else
-    python3 -m pip install lcov_cobertura
+    if python3 -m lcov_cobertura --help >/dev/null 2>&1; then
+        echo "lcov_cobertura installed successfully."
+    else
+        python3 -m pip install lcov_cobertura
+    fi
+
+    LCOV_ARGS=(
+        --directory "${COVERAGE_DIR}"
+        --base-directory "${SOURCE_BASE}"
+        --capture
+        --no-external
+        --output-file app.info
+    )
+
+    # In local mode, .gcno files are in ./build, not in coverage_data.
+    if ! find "${COVERAGE_DIR}" -name '*.gcno' -print -quit | grep -q .; then
+        LCOV_ARGS+=(--build-directory "${PROJECT_ROOT}")
+    fi
+
+    lcov "${LCOV_ARGS[@]}"
+
+    lcov --summary app.info
+    lcov_cobertura app.info -o "${LOG_DIR}/coverage.xml"
+
+    echo "--- Coverage report generated at ${LOG_DIR}/ ---"
 fi
-
-LCOV_ARGS=(
-    --directory "${COVERAGE_DIR}"
-    --base-directory "${SOURCE_BASE}"
-    --capture
-    --no-external
-    --output-file app.info
-)
-
-# In local mode, .gcno files are in ./build, not in coverage_data.
-if ! find "${COVERAGE_DIR}" -name '*.gcno' -print -quit | grep -q .; then
-    LCOV_ARGS+=(--build-directory "${PROJECT_ROOT}")
-fi
-
-lcov "${LCOV_ARGS[@]}"
-
-lcov --summary app.info
-lcov_cobertura app.info -o "${LOG_DIR}/coverage.xml"
-
-echo "--- Coverage report generated at ${LOG_DIR}/ ---"
 
 ##########################
 # Report status

@@ -6,10 +6,10 @@ Summary: helloworld service set to be used in redpesk
 URL:     https://github.com/redpesk-samples/helloworld-binding
 Source:  %{name}-%{version}.tar.gz
 
-%bcond_with no_coverage
+%bcond_with coverage
 %bcond_with cpp
 
-%if %{without no_coverage}
+%if %{with coverage}
 # Coverage builds remap source paths outside the RPM build tree, which makes
 # automatic debugsource generation empty. Coverage data is provided by the
 # redtest subpackage instead.
@@ -24,7 +24,7 @@ Source:  %{name}-%{version}.tar.gz
 
 %global _afmappdir %{_prefix}/redpesk
 
-%if %{without no_coverage}
+%if %{with coverage}
 %global coverage_dir %{_libexecdir}/redtest/%{name}/coverage_data
 %global redtest_srcdir %{_libexecdir}/redtest/%{name}/sources
 %endif
@@ -32,7 +32,7 @@ Source:  %{name}-%{version}.tar.gz
 BuildRequires: cmake
 BuildRequires: gcc
 BuildRequires: gcc-c++
-%if %{without no_coverage}
+%if %{with coverage}
 BuildRequires: lcov
 %endif
 BuildRequires: pkgconfig(json-c)
@@ -41,25 +41,26 @@ BuildRequires: pkgconfig(afb-binding)
 %description
 Provides a simple API showcasing the basics of binding development
 
-%if %{without no_coverage}
 %package redtest
-Summary: redtest package (coverage build)
+Summary: redtest package
 Requires: %{name} = %{version}-%{release}
-Requires: lcov
 Requires: afb-test-py
 Requires: afb-libpython
 Requires: pkgconfig(afb-binding)
+%if %{with coverage}
+Requires: lcov
 Requires: python3-pip
+%endif
 
 %description redtest
-This package contains binaries built with coverage instrumentation.
-%endif
+This package contains the redtest test suite. Coverage support is disabled by
+default and can be enabled at build time with --with coverage.
 
 %prep
 %autosetup -p 1
 
 %build
-%if %{without no_coverage}
+%if %{with coverage}
 # Remap build-time source paths to the source tree packaged with redtest.
 SRCROOT="$(pwd)"
 COVSRC="%{redtest_srcdir}"
@@ -69,7 +70,7 @@ mkdir build && cd build
 %cmake \
   -DCPP=%{cpp_build} \
   -DAFM_APP_DIR=%{_afmappdir} \
-%if %{without no_coverage}
+%if %{with coverage}
   -DCMAKE_BUILD_TYPE=Debug \
   -DCMAKE_C_FLAGS="--coverage -fPIC -ffile-prefix-map=${SRCROOT}=${COVSRC} -fdebug-prefix-map=${SRCROOT}=${COVSRC}" \
   -DCMAKE_CXX_FLAGS="--coverage -fPIC -ffile-prefix-map=${SRCROOT}=${COVSRC} -fdebug-prefix-map=${SRCROOT}=${COVSRC}" \
@@ -86,7 +87,11 @@ cd build
 %cmake_install
 cd ..
 
-%if %{without no_coverage}
+# Install redtest scripts (for testing)
+install -Dm755 redtest/run-redtest %{buildroot}%{_libexecdir}/redtest/%{name}/run-redtest
+install -Dm644 redtest/tests.py %{buildroot}%{_libexecdir}/redtest/%{name}/tests.py
+
+%if %{with coverage}
 # The main package already contains the instrumented binding used by redtest.
 # Preserve the CMake build directory in the coverage metadata layout. Runtime
 # .gcda files generated through GCOV_PREFIX/GCOV_PREFIX_STRIP keep this level
@@ -97,17 +102,12 @@ find %{__cmake_builddir} -name "*.gcno" \
   -exec cp --parents {} %{buildroot}%{coverage_dir}/ \;
 cd ..
 
-# Install redtest scripts (for testing)
-install -Dm755 redtest/run-redtest %{buildroot}%{_libexecdir}/redtest/%{name}/run-redtest
-install -Dm644 redtest/tests.py %{buildroot}%{_libexecdir}/redtest/%{name}/tests.py
-
 # Install sources needed by coverage tools.
 mkdir -p %{buildroot}%{redtest_srcdir}
 cp -a src %{buildroot}%{redtest_srcdir}/
-%else
-# CMake installs these helper files unconditionally; remove them when
-# the redtest subpackage is disabled.
-rm -rf %{buildroot}%{_libexecdir}/redtest/%{name}
+# Enable coverage in the installed redtest runner.
+sed -i 's/^COVERAGE=no$/COVERAGE=yes/' \
+  %{buildroot}%{_libexecdir}/redtest/%{name}/run-redtest
 %endif
 
 %files
@@ -118,11 +118,11 @@ rm -rf %{buildroot}%{_libexecdir}/redtest/%{name}
 %{_afmappdir}/%{name}/lib/
 %{_afmappdir}/%{name}/.rpconfig/
 
-%if %{without no_coverage}
 %files redtest
 %defattr(-,root,root)
 %{_libexecdir}/redtest/%{name}/run-redtest
 %{_libexecdir}/redtest/%{name}/tests.py
+%if %{with coverage}
 %{coverage_dir}
 %{redtest_srcdir}/src/*
 %endif
