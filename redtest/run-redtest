@@ -14,13 +14,6 @@ COVERAGE_DIR="${SCRIPT_DIR}/coverage_data"
 BUILD_DIR="${PROJECT_ROOT}/build"
 INSTALLED_LIB_DIR="/usr/redpesk/${PACKAGE_NAME}/lib"
 
-# Detect source tree location.
-if [[ -f "${SCRIPT_DIR}/sources/src/helloworld.c" ]]; then
-    SOURCE_BASE="${SCRIPT_DIR}/sources"
-else
-    SOURCE_BASE="${PROJECT_ROOT}"
-fi
-
 if [[ "${COVERAGE}" == "yes" ]]; then
     # Prepare coverage output directory.
     mkdir -p "${COVERAGE_DIR}"
@@ -46,7 +39,10 @@ if [[ ${#LIB_PATHS[@]} -eq 0 ]]; then
     exit 1
 fi
 
-LD_LIBRARY_PATH_VALUE="$(IFS=:; echo "${LIB_PATHS[*]}")"
+LD_LIBRARY_PATH_VALUE="$(
+    IFS=:
+    echo "${LIB_PATHS[*]}"
+)"
 if [[ -n "${LD_LIBRARY_PATH:-}" ]]; then
     LD_LIBRARY_PATH_VALUE="${LD_LIBRARY_PATH_VALUE}:${LD_LIBRARY_PATH}"
 fi
@@ -62,40 +58,59 @@ export LOG_DIR
 
 python3 "${SCRIPT_DIR}/tests.py" --tap | tee "${LOG_DIR}/helloworld.tap" 2>&1
 
+GCOV_LOG_DIR="${LOG_DIR}"
+find "${GCOV_LOG_DIR}" -maxdepth 1 -type f \( -name '*.gcno' -o -name '*.gcda' \) \
+    -delete 2>/dev/null || true
+
+GCNO_COUNT=0
+GCDA_COUNT=0
+
+if [[ -d "${COVERAGE_DIR}" ]]; then
+    while IFS= read -r -d '' gcno; do
+        install -Dm0644 "${gcno}" "${GCOV_LOG_DIR}/$(basename "${gcno}")"
+        ((GCNO_COUNT += 1))
+    done < <(find "${COVERAGE_DIR}" -type f -name '*.gcno' -print0)
+
+    while IFS= read -r -d '' gcda; do
+        install -Dm0644 "${gcda}" "${GCOV_LOG_DIR}/$(basename "${gcda}")"
+        ((GCDA_COUNT += 1))
+    done < <(find "${COVERAGE_DIR}" -type f -name '*.gcda' -print0)
+fi
+
+if [[ ${GCNO_COUNT} -gt 0 || ${GCDA_COUNT} -gt 0 ]]; then
+    echo "--- Exported ${GCNO_COUNT} .gcno and ${GCDA_COUNT} .gcda file(s) to ${GCOV_LOG_DIR} ---"
+    ls -l "${GCOV_LOG_DIR}"/*.gcno "${GCOV_LOG_DIR}"/*.gcda 2>/dev/null || true
+else
+    echo "--- No gcov data found to export ---"
+fi
+
 ##########################
 # Coverage report section
 ##########################
 
 if [[ "${COVERAGE}" == "yes" ]]; then
-    echo "--- Generating coverage reports ---"
+    echo "--- Generating gcov coverage summary ---"
 
-    rm -f app.info
+    command -v gcov >/dev/null 2>&1 || {
+        echo "ERROR: gcov is required when coverage is enabled" >&2
+        exit 1
+    }
 
-    if python3 -m lcov_cobertura --help >/dev/null 2>&1; then
-        echo "lcov_cobertura installed successfully."
-    else
-        python3 -m pip install lcov_cobertura
-    fi
-
-    LCOV_ARGS=(
-        --directory "${COVERAGE_DIR}"
-        --base-directory "${SOURCE_BASE}"
-        --capture
-        --no-external
-        --output-file app.info
+    mapfile -d '' GCNO_FILES < <(
+        find "${COVERAGE_DIR}" -type f \
+            -path '*/CMakeFiles/helloworld-binding.dir/*' \
+            -name '*.gcno' \
+            -print0 | sort -z
     )
 
-    # In local mode, .gcno files are in ./build, not in coverage_data.
-    if ! find "${COVERAGE_DIR}" -name '*.gcno' -print -quit | grep -q .; then
-        LCOV_ARGS+=(--build-directory "${PROJECT_ROOT}")
+    if [[ ${#GCNO_FILES[@]} -eq 0 ]]; then
+        echo "ERROR: no helloworld-binding .gcno files found in ${COVERAGE_DIR}" >&2
+        exit 1
     fi
 
-    lcov "${LCOV_ARGS[@]}"
+    "${SCRIPT_DIR}/gcov-total.sh" "${GCNO_FILES[@]}" |
+        tee "${LOG_DIR}/coverage.log"
 
-    lcov --summary app.info
-    lcov_cobertura app.info -o "${LOG_DIR}/coverage.xml"
-
-    echo "--- Coverage report generated at ${LOG_DIR}/ ---"
 fi
 
 ##########################

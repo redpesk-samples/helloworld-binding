@@ -9,13 +9,6 @@ Source:  %{name}-%{version}.tar.gz
 %bcond_with coverage
 %bcond_with cpp
 
-%if %{with coverage}
-# Coverage builds remap source paths outside the RPM build tree, which makes
-# automatic debugsource generation empty. Coverage data is provided by the
-# redtest subpackage instead.
-%global debug_package %{nil}
-%endif
-
 %if %{with cpp}
 %global cpp_build ON
 %else
@@ -26,15 +19,11 @@ Source:  %{name}-%{version}.tar.gz
 
 %if %{with coverage}
 %global coverage_dir %{_libexecdir}/redtest/%{name}/coverage_data
-%global redtest_srcdir %{_libexecdir}/redtest/%{name}/sources
 %endif
 
 BuildRequires: cmake
 BuildRequires: gcc
 BuildRequires: gcc-c++
-%if %{with coverage}
-BuildRequires: lcov
-%endif
 BuildRequires: pkgconfig(json-c)
 BuildRequires: pkgconfig(afb-binding)
 
@@ -48,8 +37,7 @@ Requires: afb-test-py
 Requires: afb-libpython
 Requires: pkgconfig(afb-binding)
 %if %{with coverage}
-Requires: lcov
-Requires: python3-pip
+Requires: gcc
 %endif
 
 %description redtest
@@ -60,20 +48,14 @@ default and can be enabled at build time with --with coverage.
 %autosetup -p 1
 
 %build
-%if %{with coverage}
-# Remap build-time source paths to the source tree packaged with redtest.
-SRCROOT="$(pwd)"
-COVSRC="%{redtest_srcdir}"
-%endif
-
 mkdir build && cd build
 %cmake \
   -DCPP=%{cpp_build} \
   -DAFM_APP_DIR=%{_afmappdir} \
 %if %{with coverage}
   -DCMAKE_BUILD_TYPE=Debug \
-  -DCMAKE_C_FLAGS="--coverage -fPIC -ffile-prefix-map=${SRCROOT}=${COVSRC} -fdebug-prefix-map=${SRCROOT}=${COVSRC}" \
-  -DCMAKE_CXX_FLAGS="--coverage -fPIC -ffile-prefix-map=${SRCROOT}=${COVSRC} -fdebug-prefix-map=${SRCROOT}=${COVSRC}" \
+  -DCMAKE_C_FLAGS="--coverage -fPIC" \
+  -DCMAKE_CXX_FLAGS="--coverage -fPIC" \
 %else
   -DCMAKE_BUILD_TYPE=Release \
 %endif
@@ -89,6 +71,7 @@ cd ..
 
 # Install redtest scripts (for testing)
 install -Dm755 redtest/run-redtest %{buildroot}%{_libexecdir}/redtest/%{name}/run-redtest
+install -Dm755 redtest/gcov-total.sh %{buildroot}%{_libexecdir}/redtest/%{name}/gcov-total.sh
 install -Dm644 redtest/tests.py %{buildroot}%{_libexecdir}/redtest/%{name}/tests.py
 
 %if %{with coverage}
@@ -98,13 +81,9 @@ install -Dm644 redtest/tests.py %{buildroot}%{_libexecdir}/redtest/%{name}/tests
 # (for example redhat-linux-build/), so .gcno files must use the same path.
 mkdir -p %{buildroot}%{coverage_dir}
 cd build
-find %{__cmake_builddir} -name "*.gcno" \
-  -exec cp --parents {} %{buildroot}%{coverage_dir}/ \;
+find . -name "*.gcno" -exec cp --parents {} %{buildroot}%{coverage_dir}/ \;
 cd ..
 
-# Install sources needed by coverage tools.
-mkdir -p %{buildroot}%{redtest_srcdir}
-cp -a src %{buildroot}%{redtest_srcdir}/
 # Enable coverage in the installed redtest runner.
 sed -i 's/^COVERAGE=no$/COVERAGE=yes/' \
   %{buildroot}%{_libexecdir}/redtest/%{name}/run-redtest
@@ -121,8 +100,8 @@ sed -i 's/^COVERAGE=no$/COVERAGE=yes/' \
 %files redtest
 %defattr(-,root,root)
 %{_libexecdir}/redtest/%{name}/run-redtest
+%{_libexecdir}/redtest/%{name}/gcov-total.sh
 %{_libexecdir}/redtest/%{name}/tests.py
 %if %{with coverage}
 %{coverage_dir}
-%{redtest_srcdir}/src/*
 %endif
